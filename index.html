@@ -325,10 +325,14 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 .lb-nav svg { width: 28px; height: 28px; }
 @media (max-width: 699px) { .lb-nav { display: none; } }
 
+/* motion follows the device's reduce-motion setting unless the visitor picks with the switch in the top bar */
+.motion-off *, .motion-off *::before, .motion-off *::after { animation: none !important; transition: none !important; }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html:not(.motion) *, html:not(.motion) *::before, html:not(.motion) *::after { animation: none !important; transition: none !important; }
 }
-@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+.motion { scroll-behavior: smooth; }
+.motion-toggle { font: inherit; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color .3s; }
+.motion-toggle:hover { color: var(--fg); }
 </style>
 </head>
 <body>
@@ -352,6 +356,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
           <a href="#work">Work</a>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
+          <button type="button" class="motion-toggle" id="motion-toggle" hidden>Turn on motion</button>
         </nav>
       </div>
       <div class="hero">
@@ -879,7 +884,25 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 <script>
 (() => {
   const root = document.documentElement;
-  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* motion: the visitor's own choice wins, otherwise the device's reduce-motion setting */
+  const KEY = 'kn-motion';
+  let pref = null;
+  try { pref = localStorage.getItem(KEY); } catch (e) { /* storage blocked */ }
+  const asked = new URLSearchParams(location.search).get('motion');
+  if (asked === 'on' || asked === 'off') { pref = asked; try { localStorage.setItem(KEY, asked); } catch (e) {} }
+  const systemCalm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const calm = pref ? pref === 'off' : systemCalm;
+  root.classList.toggle('motion-off', calm);
+  const toggle = document.getElementById('motion-toggle');
+  toggle.textContent = calm ? 'Turn on motion' : 'Reduce motion';
+  toggle.hidden = false;
+  toggle.addEventListener('click', () => {
+    const next = calm ? 'on' : 'off';
+    let saved = false;
+    try { localStorage.setItem(KEY, next); saved = localStorage.getItem(KEY) === next; } catch (e) {}
+    if (saved) location.reload();
+    else { const u = new URL(location.href); u.searchParams.set('motion', next); location.href = u.toString(); }
+  });
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const inOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
@@ -1142,7 +1165,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 (() => {
   const stages = Array.from(document.querySelectorAll('.shift-stage'));
   if (!stages.length || !('IntersectionObserver' in window)) return;
-  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const calm = !document.documentElement.classList.contains('motion');
   let begun = false;
   const near = new IntersectionObserver(entries => {
     if (begun || !entries.some(e => e.isIntersecting)) return;
