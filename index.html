@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Khoi Ngo Photography</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Khoi Ngo is a portrait photographer in Sydney: graduations, áo dài and editorial shoots.">
+<meta property="og:title" content="Khoi Ngo Photography">
+<meta property="og:description" content="Portrait photographer in Sydney: graduations, áo dài and editorial shoots.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 48'%3E%3Cpath d='M0 48V19A19 19 0 0 1 16 0a19 19 0 0 1 16 19v29z' fill='%238A5F32'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;300;400;500&display=swap">
+<style>
+/* Layout: a symmetric arch "facade" hero, then left-aligned work index, shoot chapters (sticky notes left, justified photo rows right), about, contact. */
+:root {
+  --paper: #FAFAF8;
+  --ink: #1C1D1B;
+  --muted: #6B6C66;
+  --line: #E2E2DC;
+  --stone: #8A5F32;      /* sandstone, used only for links, focus and hover */
+  --well: #EDEDE8;       /* placeholder behind loading photos */
+  --veil: #0F0F0E;       /* photo viewer, dark in both themes */
+  --veil-ink: #EDEDE8;
+
+  --font: "Be Vietnam Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --s-1: 0.8125rem;
+  --s0: 1.0625rem;
+  --s1: 1.25rem;
+  --s2: 1.75rem;
+  --s3: 2.375rem;
+  --s4: 3.25rem;
+  --display: clamp(4rem, 10.5vw, 11.5rem);
+
+  --gutter: clamp(16px, 4vw, 56px);
+  --row: 150px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #151614; --ink: #ECECE7; --muted: #9A9B94; --line: #2B2C29;
+    --stone: #D1A26B; --well: #1F201D; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #151614; --ink: #ECECE7; --muted: #9A9B94; --line: #2B2C29;
+  --stone: #D1A26B; --well: #1F201D; color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+html:has(dialog[open]) { overflow: hidden; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--s0);
+  font-weight: 300;
+  line-height: 1.6;
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; }
+a { color: inherit; text-decoration-color: var(--stone); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { color: var(--stone); }
+:focus-visible { outline: 2px solid var(--stone); outline-offset: 3px; }
+h1, h2, h3, p { margin: 0; }
+h2, h3 { text-wrap: balance; font-weight: 300; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap { max-width: 1360px; margin-inline: auto; }
+
+/* ---------- top bar ---------- */
+.bar { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-block: 20px; }
+.bar-name { font-weight: 500; text-decoration: none; letter-spacing: 0.01em; }
+.bar nav { display: flex; gap: clamp(16px, 3vw, 36px); }
+.bar nav a { text-decoration: none; color: var(--muted); }
+.bar nav a:hover { color: var(--ink); }
+
+/* ---------- hero: name either side of a sandstone arch ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: "w1 arch w2" "line arch more";
+  grid-template-rows: 1fr auto;
+  column-gap: clamp(20px, 3vw, 44px);
+  row-gap: 20px;
+  padding-block: clamp(16px, 4vw, 40px) clamp(56px, 8vw, 112px);
+}
+.hero-word {
+  align-self: end;
+  font-size: var(--display);
+  font-weight: 200;
+  line-height: 0.8;
+  letter-spacing: -0.045em;
+  padding-bottom: 0.13em; /* room for the g descender */
+}
+.w1 { grid-area: w1; justify-self: end; }
+.w2 { grid-area: w2; justify-self: start; }
+.arch {
+  grid-area: arch;
+  width: min(30vw, 46svh);
+  aspect-ratio: 2 / 3;
+  max-width: 100%;
+  clip-path: url(#arch);
+  overflow: hidden;
+  background: var(--well);
+}
+.arch img { width: 100%; height: 100%; object-fit: cover; object-position: 48% 50%; display: block; animation: settle 2.2s cubic-bezier(.16, .7, .2, 1) both; }
+@keyframes settle { from { transform: scale(1.09); } to { transform: none; } }
+.hero-line { grid-area: line; justify-self: end; text-align: right; max-width: 22ch; font-size: var(--s1); line-height: 1.4; text-wrap: balance; }
+.hero-more { grid-area: more; justify-self: start; max-width: 34ch; color: var(--muted); }
+.hero-more a { color: var(--ink); white-space: nowrap; }
+
+@media (max-width: 899px) {
+  .hero {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "arch arch" "w1 w2" "line line" "more more";
+    grid-template-rows: auto;
+    column-gap: 4.6vw;
+    row-gap: 14px;
+  }
+  .hero-word { font-size: clamp(3.5rem, 19vw, 6.5rem); padding-top: 10px; }
+  .w1 { justify-self: start; }
+  .arch { width: min(100%, 440px); justify-self: center; }
+  .hero-line, .hero-more { justify-self: start; text-align: left; max-width: 40ch; }
+  .hero-line { margin-top: 8px; }
+}
+
+/* ---------- section headings ---------- */
+.section { padding-block: clamp(48px, 7vw, 96px); border-top: 1px solid var(--line); }
+.section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: clamp(24px, 4vw, 48px); }
+.section-title { font-size: var(--s4); font-weight: 200; line-height: 1.05; letter-spacing: -0.02em; }
+.section-sub { color: var(--muted); }
+
+/* ---------- work index ---------- */
+.index { list-style: none; margin: 0; padding: 0; }
+.idx {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  grid-template-areas: "thumb title count" "thumb where count";
+  column-gap: 20px;
+  align-items: center;
+  padding-block: 14px;
+  border-top: 1px solid var(--line);
+  text-decoration: none;
+}
+.index li:last-child .idx { border-bottom: 1px solid var(--line); }
+.idx-thumb { grid-area: thumb; width: 56px; height: 72px; object-fit: cover; display: block; background: var(--well); }
+.idx-title { grid-area: title; font-size: var(--s2); line-height: 1.15; letter-spacing: -0.01em; transition: color .2s; }
+.idx-where { grid-area: where; color: var(--muted); font-size: var(--s-1); }
+.idx-count { grid-area: count; color: var(--muted); font-size: var(--s-1); font-variant-numeric: tabular-nums; }
+.idx:hover { color: inherit; }
+.idx:hover .idx-title { color: var(--stone); }
+@media (min-width: 900px) {
+  .idx { grid-template-columns: 56px minmax(0, 1.4fr) minmax(0, 1fr) 90px; grid-template-areas: "thumb title where count"; }
+  .idx-where, .idx-count { font-size: var(--s0); }
+  .idx-count { text-align: right; }
+}
+
+/* ---------- chapters ---------- */
+.chapter { display: grid; gap: 20px; padding-block: clamp(36px, 5vw, 64px); border-top: 1px solid var(--line); scroll-margin-top: 16px; }
+.chapter-head { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.chapter-title { font-size: var(--s3); line-height: 1.1; letter-spacing: -0.015em; }
+.chapter-where { color: var(--muted); }
+.chapter-note { max-width: 34ch; margin-top: 8px; }
+.chapter-count { color: var(--muted); font-size: var(--s-1); margin-top: 8px; font-variant-numeric: tabular-nums; }
+@media (min-width: 900px) {
+  .chapter { grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: clamp(32px, 4vw, 64px); }
+  .chapter-head { position: sticky; top: 24px; align-self: start; }
+}
+
+/* justified rows: each frame grows in proportion to its aspect ratio, so a row shares one height */
+.frames { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+.frames::after { content: ""; flex: 100000 1 0px; }
+.frame { margin: 0; min-width: 0; flex-grow: calc(var(--ar) * 100); flex-basis: calc(var(--ar) * var(--row)); }
+.frames--single::after, .frames.is-justified::after { display: none; }
+.frames.is-justified .frame { flex: 0 0 auto; }
+.frames.is-justified .frame.row-end { flex-grow: 1; }
+.frames--single .frame { flex: 0 1 min(100%, 440px); }
+.frame-btn { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; color: inherit; }
+.frame img { display: block; width: 100%; height: auto; aspect-ratio: var(--ar); object-fit: cover; background: var(--well); transition: opacity .25s; }
+.frame-btn:hover img { opacity: 0.88; }
+@media (min-width: 700px) { :root { --row: 230px; } }
+@media (min-width: 1280px) { :root { --row: 270px; } }
+
+/* ---------- about ---------- */
+.about { display: grid; gap: clamp(32px, 5vw, 72px); }
+@media (min-width: 900px) { .about { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); } }
+.about-text { display: grid; gap: 1.1em; align-content: start; max-width: 60ch; font-size: var(--s1); line-height: 1.6; min-width: 0; }
+.about-text p:first-child { font-size: var(--s2); line-height: 1.35; font-weight: 200; letter-spacing: -0.01em; }
+.facts { display: grid; gap: 32px; align-content: start; min-width: 0; }
+.facts h3 { font-size: var(--s0); font-weight: 500; margin-bottom: 10px; }
+.facts ul { list-style: none; margin: 0; padding: 0; }
+.facts li { padding-block: 10px; border-top: 1px solid var(--line); }
+.facts li:last-child { border-bottom: 1px solid var(--line); }
+.timeline li { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 16px; }
+.timeline time, .timeline .when { color: var(--muted); font-variant-numeric: tabular-nums; }
+.role small { display: block; color: var(--muted); font-size: var(--s-1); }
+
+/* ---------- contact ---------- */
+.contact-lead { max-width: 44ch; font-size: var(--s1); margin-bottom: 28px; }
+.mail { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 20px; margin-bottom: 36px; }
+.mail-addr { font-size: clamp(1.6rem, 5vw, var(--s4)); font-weight: 200; letter-spacing: -0.02em; line-height: 1.15; overflow-wrap: anywhere; text-decoration: none; }
+.copy { font: inherit; font-size: var(--s-1); color: var(--ink); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.copy:hover { border-color: var(--stone); }
+.links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-top: 1px solid var(--line); }
+.links li { border-bottom: 1px solid var(--line); }
+.links a { display: grid; gap: 2px; padding-block: 14px; text-decoration: none; }
+.links span { color: var(--muted); font-size: var(--s-1); }
+
+.foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-block: 28px 40px; color: var(--muted); font-size: var(--s-1); border-top: 1px solid var(--line); }
+
+/* ---------- photo viewer ---------- */
+.lb { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--veil); color: var(--veil-ink); }
+.lb::backdrop { background: rgba(0, 0, 0, 0.9); }
+.lb[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.lb-top {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px));
+  font-size: var(--s-1);
+}
+.lb-caption { display: flex; gap: 14px; min-width: 0; }
+.lb-caption b { font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-caption span { opacity: 0.6; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lb-stage { position: relative; display: grid; place-items: center; min-height: 0; padding: 0 clamp(8px, 6vw, 88px) calc(16px + env(safe-area-inset-bottom, 0px)); touch-action: pan-y; }
+.lb-img { display: block; max-width: 100%; max-height: calc(100svh - 80px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); width: auto; height: auto; object-fit: contain; user-select: none; }
+.lb button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+.lb-close { padding: 8px 4px; font-size: var(--s0); }
+.lb-nav { position: absolute; top: 0; bottom: 0; width: clamp(48px, 10vw, 120px); display: grid; place-items: center; opacity: 0.55; transition: opacity .2s; }
+.lb-nav:hover, .lb-nav:focus-visible { opacity: 1; }
+.lb-prev { left: env(safe-area-inset-left, 0px); }
+.lb-next { right: env(safe-area-inset-right, 0px); }
+.lb-nav svg { width: 28px; height: 28px; }
+@media (max-width: 699px) { .lb-nav { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .arch img { animation: none; }
+  * { transition: none !important; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- pointed (drop) arch, in the element's own 0–1 box; the arch box is 2:3 -->
+    <clipPath id="arch" clipPathUnits="objectBoundingBox">
+      <path d="M0,1 L0,0.394 A0.6,0.4 0 0 1 0.5,0 A0.6,0.4 0 0 1 1,0.394 L1,1 Z"/>
+    </clipPath>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <div class="bar" id="top">
+    <a class="bar-name" href="#top">Khoi Ngo</a>
+    <nav aria-label="Sections">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+
+  <header class="hero">
+    <h1 class="sr-only">Khoi Ngo, portrait photographer in Sydney</h1>
+    <span class="hero-word w1" aria-hidden="true">Khoi</span>
+    <div class="arch">
+      <img src="images/aodai-1-s.jpg" srcset="images/aodai-1-s.jpg 900w, images/aodai-1-l.jpg 2000w" sizes="(min-width: 900px) 30vw, 92vw" width="1502" height="2000" alt="Woman in a champagne áo dài leaning on a sandstone ledge under an arch, the Quadrangle clock tower behind" fetchpriority="high" decoding="async">
+    </div>
+    <span class="hero-word w2" aria-hidden="true">Ngo</span>
+    <p class="hero-line">Portrait photographer in Sydney.</p>
+    <p class="hero-more">I shoot graduations, áo dài and editorial concepts, mostly on sandstone and by the water. <a href="#contact">Book a shoot</a></p>
+  </header>
+
+  <main>
+    <section class="section" id="work" aria-labelledby="work-title">
+      <div class="section-head">
+        <h2 class="section-title" id="work-title">Work</h2>
+        <p class="section-sub">Eight shoots, 38 photographs</p>
+      </div>
+      <ul class="index">
+        <li>
+          <a class="idx" href="#gothic">
+            <img class="idx-thumb" src="images/gothic-1-s.jpg" width="2000" height="1334" alt="" loading="lazy" decoding="async">
+            <span class="idx-title">Gothic</span>
+            <span class="idx-where">Sydney</span>
+            <span class="idx-count">3 photos</span>
+          </a>
+        </li>
+        <li>
+          <a class="idx" href="#aodai">
+            <img class="idx-thumb" src="images/aodai-1-s.jpg" width="1502" height="2000" alt="" loading="lazy" decoding="async">
+            <span class="idx-title">Áo dài in the Quadrangle</span>
+            <span class="idx-where">The University of Sydney</span>
+            <span class="idx-count">3 photos</span>
+          </a>
+        </li>
+        <li>
+          <a class="idx" href="#graduation">
+            <img class="idx-thumb" src="images/graduation-1-s.jpg" width="1501" height="2000" alt="" loading="lazy" decoding="async">
+            <span class="idx-title">Graduation season</span>
+            <span class="idx-where">The University of Sydney and around</span>
+            <span class="idx-count">8 photos</span>
+          </a>
+        </li>
+        <li>
+          <a class="idx" href="#carpark">
+            <img class="idx-thumb" src="images/carpark-1-s.jpg" width="1500" height="2000" alt="" loading="lazy" decoding="async">
+            <span class="idx-title">Car park</span>
+            <span class="idx-where">Sydney</span>
+            <span class="idx-count">4 photos</span>
+          </a>
+        </li>
+        <li>
+          <a class="idx" href="#harbour">
+            <img class="idx-thumb" src="images/harbour-1-s.jpg" width="1500" height="2000" alt="" loading="lazy" decoding="async">
+            <span class="idx-title">White by the harbour</span>
+            <span class="idx-where">Sydney Harbour</span>
+            <span class="idx-count">8 photos</span>
+          </a>
+        </li>
+        <li>
+          <a class="idx" href="#waterfront">
+            <img class="idx-thumb" src="images/waterfront-1-s.jpg" width="1500" height="2000" alt="" loading="lazy" decoding="async">
+            <span class="idx-title">Waterfront</span>
+            <span class="idx-where">Sydney</span>
+            <span class="idx-count">5 photos</span>
+          </a>
+        </li>
+        <li>
+          <a class="idx" href="#autumn">
+            <img class="idx-thumb" src="images/autumn-1-s.jpg" width="1440" height="862" alt="" loading="lazy" decoding="async">
+            <span class="idx-title">Autumn afternoon</span>
+            <span class="idx-where">Sydney</span>
+            <span class="idx-count">6 photos</span>
+          </a>
+        </li>
+        <li>
+          <a class="idx" href="#studio">
+            <img class="idx-thumb" src="images/studio-1-s.jpg" width="1333" height="2000" alt="" loading="lazy" decoding="async">
+            <span class="idx-title">Studio</span>
+            <span class="idx-where">Indoors</span>
+            <span class="idx-count">1 photo</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+      <section class="chapter" id="gothic" data-title="Gothic" aria-labelledby="gothic-title">
+        <div class="chapter-head">
+          <h3 class="chapter-title" id="gothic-title">Gothic</h3>
+          <p class="chapter-where">Sydney</p>
+          <p class="chapter-note">A white gown, dark sandstone halls and the light from one open door.</p>
+          <p class="chapter-count">3 photos</p>
+        </div>
+        <div class="frames">
+          <figure class="frame" style="--ar:1.4993">
+            <button type="button" class="frame-btn" data-full="images/gothic-1-l.jpg" aria-label="View larger: Gothic, photo 1 of 3">
+              <img src="images/gothic-1-s.jpg" srcset="images/gothic-1-s.jpg 900w, images/gothic-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1334" alt="Silhouette of a woman in a white gown standing in an arched doorway, the lawn bright behind her" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/gothic-2-l.jpg" aria-label="View larger: Gothic, photo 2 of 3">
+              <img src="images/gothic-2-s.jpg" srcset="images/gothic-2-s.jpg 900w, images/gothic-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in a lace corset gown on the steps of a carved sandstone doorway" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5004">
+            <button type="button" class="frame-btn" data-full="images/gothic-3-l.jpg" aria-label="View larger: Gothic, photo 3 of 3">
+              <img src="images/gothic-3-s.jpg" srcset="images/gothic-3-s.jpg 900w, images/gothic-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman in a white gown seated beside wooden pews under stained-glass windows" loading="lazy" decoding="async">
+            </button>
+          </figure>
+        </div>
+      </section>
+
+      <section class="chapter" id="aodai" data-title="Áo dài in the Quadrangle" aria-labelledby="aodai-title">
+        <div class="chapter-head">
+          <h3 class="chapter-title" id="aodai-title">Áo dài in the Quadrangle</h3>
+          <p class="chapter-where">The University of Sydney</p>
+          <p class="chapter-note">Traditional dress against the Quadrangle’s sandstone, shot in hard sun.</p>
+          <p class="chapter-count">3 photos</p>
+        </div>
+        <div class="frames">
+          <figure class="frame" style="--ar:0.751">
+            <button type="button" class="frame-btn" data-full="images/aodai-1-l.jpg" aria-label="View larger: Áo dài in the Quadrangle, photo 1 of 3">
+              <img src="images/aodai-1-s.jpg" srcset="images/aodai-1-s.jpg 900w, images/aodai-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1502" height="2000" alt="Woman in a champagne áo dài leaning on a sandstone ledge under an arch, the Quadrangle clock tower behind" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/aodai-2-l.jpg" aria-label="View larger: Áo dài in the Quadrangle, photo 2 of 3">
+              <img src="images/aodai-2-s.jpg" srcset="images/aodai-2-s.jpg 900w, images/aodai-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in a patterned áo dài against a sandstone column, striped with shadow" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/aodai-3-l.jpg" aria-label="View larger: Áo dài in the Quadrangle, photo 3 of 3">
+              <img src="images/aodai-3-s.jpg" srcset="images/aodai-3-s.jpg 900w, images/aodai-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Wider view through the arch to the Quadrangle, the woman in áo dài seated on the ledge" loading="lazy" decoding="async">
+            </button>
+          </figure>
+        </div>
+      </section>
+
+      <section class="chapter" id="graduation" data-title="Graduation season" aria-labelledby="graduation-title">
+        <div class="chapter-head">
+          <h3 class="chapter-title" id="graduation-title">Graduation season</h3>
+          <p class="chapter-where">The University of Sydney and around</p>
+          <p class="chapter-note">Cap, gown and flowers. Graduation portraits on campus, with a few sets finished as title cards.</p>
+          <p class="chapter-count">8 photos</p>
+        </div>
+        <div class="frames">
+          <figure class="frame" style="--ar:0.7505">
+            <button type="button" class="frame-btn" data-full="images/graduation-1-l.jpg" aria-label="View larger: Graduation season, photo 1 of 8">
+              <img src="images/graduation-1-s.jpg" srcset="images/graduation-1-s.jpg 900w, images/graduation-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1501" height="2000" alt="Graduation portrait in cap and gown against warm sandstone, with a title card for Chadatan" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/graduation-2-l.jpg" aria-label="View larger: Graduation season, photo 2 of 8">
+              <img src="images/graduation-2-s.jpg" srcset="images/graduation-2-s.jpg 900w, images/graduation-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1080" height="1440" alt="Graduate smiling at a lecture-hall desk with a bouquet and a teddy bear, with a title card for Felita" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.7505">
+            <button type="button" class="frame-btn" data-full="images/graduation-3-l.jpg" aria-label="View larger: Graduation season, photo 3 of 8">
+              <img src="images/graduation-3-s.jpg" srcset="images/graduation-3-s.jpg 900w, images/graduation-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1501" height="2000" alt="Three-panel graduation story: a garden bench, a sandstone archway and the #USYD sign" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/graduation-4-l.jpg" aria-label="View larger: Graduation season, photo 4 of 8">
+              <img src="images/graduation-4-s.jpg" srcset="images/graduation-4-s.jpg 900w, images/graduation-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1080" height="1440" alt="Two panels: resting on a desk in cap and gown, and standing in front of the University of Sydney crest" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/graduation-5-l.jpg" aria-label="View larger: Graduation season, photo 5 of 8">
+              <img src="images/graduation-5-s.jpg" srcset="images/graduation-5-s.jpg 900w, images/graduation-5-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1080" height="1440" alt="Two panels of a graduate holding a bouquet of blue flowers and a teddy bear" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/graduation-6-l.jpg" aria-label="View larger: Graduation season, photo 6 of 8">
+              <img src="images/graduation-6-s.jpg" srcset="images/graduation-6-s.jpg 900w, images/graduation-6-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Graduate turning in the wind, gown and gold hood lifting, under autumn trees" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/graduation-7-l.jpg" aria-label="View larger: Graduation season, photo 7 of 8">
+              <img src="images/graduation-7-s.jpg" srcset="images/graduation-7-s.jpg 900w, images/graduation-7-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Portrait in a cream lace áo dài under autumn trees" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/graduation-8-l.jpg" aria-label="View larger: Graduation season, photo 8 of 8">
+              <img src="images/graduation-8-s.jpg" srcset="images/graduation-8-s.jpg 900w, images/graduation-8-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Graduate in a gown over a lace áo dài, sitting on the lawn with flowers" loading="lazy" decoding="async">
+            </button>
+          </figure>
+        </div>
+      </section>
+
+      <section class="chapter" id="carpark" data-title="Car park" aria-labelledby="carpark-title">
+        <div class="chapter-head">
+          <h3 class="chapter-title" id="carpark-title">Car park</h3>
+          <p class="chapter-where">Sydney</p>
+          <p class="chapter-note">One shopping trolley, one level of underground parking and on-camera flash.</p>
+          <p class="chapter-count">4 photos</p>
+        </div>
+        <div class="frames">
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/carpark-1-l.jpg" aria-label="View larger: Car park, photo 1 of 4">
+              <img src="images/carpark-1-s.jpg" srcset="images/carpark-1-s.jpg 900w, images/carpark-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in glasses sitting in a shopping trolley in an underground car park, lit by flash" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/carpark-2-l.jpg" aria-label="View larger: Car park, photo 2 of 4">
+              <img src="images/carpark-2-s.jpg" srcset="images/carpark-2-s.jpg 900w, images/carpark-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Close portrait in the trolley, chin resting on her hand, car park lights behind" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5004">
+            <button type="button" class="frame-btn" data-full="images/carpark-3-l.jpg" aria-label="View larger: Car park, photo 3 of 4">
+              <img src="images/carpark-3-s.jpg" srcset="images/carpark-3-s.jpg 900w, images/carpark-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman in the trolley beside a painted orange arrow on the car park floor" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5004">
+            <button type="button" class="frame-btn" data-full="images/carpark-4-l.jpg" aria-label="View larger: Car park, photo 4 of 4">
+              <img src="images/carpark-4-s.jpg" srcset="images/carpark-4-s.jpg 900w, images/carpark-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Low angle with a sneaker in the foreground, the woman laughing in the trolley" loading="lazy" decoding="async">
+            </button>
+          </figure>
+        </div>
+      </section>
+
+      <section class="chapter" id="harbour" data-title="White by the harbour" aria-labelledby="harbour-title">
+        <div class="chapter-head">
+          <h3 class="chapter-title" id="harbour-title">White by the harbour</h3>
+          <p class="chapter-where">Sydney Harbour</p>
+          <p class="chapter-note">White clothes, white flowers and late sun along the harbour foreshore.</p>
+          <p class="chapter-count">8 photos</p>
+        </div>
+        <div class="frames">
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/harbour-1-l.jpg" aria-label="View larger: White by the harbour, photo 1 of 8">
+              <img src="images/harbour-1-s.jpg" srcset="images/harbour-1-s.jpg 900w, images/harbour-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman holding white flowers by the harbour, the Opera House and Harbour Bridge behind" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5004">
+            <button type="button" class="frame-btn" data-full="images/harbour-2-l.jpg" aria-label="View larger: White by the harbour, photo 2 of 8">
+              <img src="images/harbour-2-s.jpg" srcset="images/harbour-2-s.jpg 900w, images/harbour-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman in cream looking back over her shoulder, a sailboat moored on the harbour behind" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/harbour-3-l.jpg" aria-label="View larger: White by the harbour, photo 3 of 8">
+              <img src="images/harbour-3-s.jpg" srcset="images/harbour-3-s.jpg 900w, images/harbour-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman on a park bench with a small camera and white flowers" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5004">
+            <button type="button" class="frame-btn" data-full="images/harbour-4-l.jpg" aria-label="View larger: White by the harbour, photo 4 of 8">
+              <img src="images/harbour-4-s.jpg" srcset="images/harbour-4-s.jpg 900w, images/harbour-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman holding white flowers on a sunlit lawn among tall trees" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/harbour-5-l.jpg" aria-label="View larger: White by the harbour, photo 5 of 8">
+              <img src="images/harbour-5-s.jpg" srcset="images/harbour-5-s.jpg 900w, images/harbour-5-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in a white dress taking a selfie on the grass under a pine" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5004">
+            <button type="button" class="frame-btn" data-full="images/harbour-6-l.jpg" aria-label="View larger: White by the harbour, photo 6 of 8">
+              <img src="images/harbour-6-s.jpg" srcset="images/harbour-6-s.jpg 900w, images/harbour-6-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Sun low over the harbour, the Opera House and Harbour Bridge in the distance" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/harbour-7-l.jpg" aria-label="View larger: White by the harbour, photo 7 of 8">
+              <img src="images/harbour-7-s.jpg" srcset="images/harbour-7-s.jpg 900w, images/harbour-7-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in pale blue beside a vine-covered stone pillar" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5004">
+            <button type="button" class="frame-btn" data-full="images/harbour-8-l.jpg" aria-label="View larger: White by the harbour, photo 8 of 8">
+              <img src="images/harbour-8-s.jpg" srcset="images/harbour-8-s.jpg 900w, images/harbour-8-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman in white sitting on the lawn holding a small camera, long shadows across the grass" loading="lazy" decoding="async">
+            </button>
+          </figure>
+        </div>
+      </section>
+
+      <section class="chapter" id="waterfront" data-title="Waterfront" aria-labelledby="waterfront-title">
+        <div class="chapter-head">
+          <h3 class="chapter-title" id="waterfront-title">Waterfront</h3>
+          <p class="chapter-where">Sydney</p>
+          <p class="chapter-note">Bright sun, sandstone blocks and the water behind.</p>
+          <p class="chapter-count">5 photos</p>
+        </div>
+        <div class="frames">
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/waterfront-1-l.jpg" aria-label="View larger: Waterfront, photo 1 of 5">
+              <img src="images/waterfront-1-s.jpg" srcset="images/waterfront-1-s.jpg 900w, images/waterfront-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in a black top sitting on harbour rocks, holding a small green camera" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5004">
+            <button type="button" class="frame-btn" data-full="images/waterfront-2-l.jpg" aria-label="View larger: Waterfront, photo 2 of 5">
+              <img src="images/waterfront-2-s.jpg" srcset="images/waterfront-2-s.jpg 900w, images/waterfront-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman standing on sandstone blocks by the water, apartment towers across the bay" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/waterfront-3-l.jpg" aria-label="View larger: Waterfront, photo 3 of 5">
+              <img src="images/waterfront-3-s.jpg" srcset="images/waterfront-3-s.jpg 900w, images/waterfront-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman at the edge of the frame, arm raised behind her head, the harbour behind" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5004">
+            <button type="button" class="frame-btn" data-full="images/waterfront-4-l.jpg" aria-label="View larger: Waterfront, photo 4 of 5">
+              <img src="images/waterfront-4-s.jpg" srcset="images/waterfront-4-s.jpg 900w, images/waterfront-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman holding a small green camera up beside her face by the water" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75">
+            <button type="button" class="frame-btn" data-full="images/waterfront-5-l.jpg" aria-label="View larger: Waterfront, photo 5 of 5">
+              <img src="images/waterfront-5-s.jpg" srcset="images/waterfront-5-s.jpg 900w, images/waterfront-5-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman sitting on a sandstone ledge, the harbour and a bridge behind" loading="lazy" decoding="async">
+            </button>
+          </figure>
+        </div>
+      </section>
+
+      <section class="chapter" id="autumn" data-title="Autumn afternoon" aria-labelledby="autumn-title">
+        <div class="chapter-head">
+          <h3 class="chapter-title" id="autumn-title">Autumn afternoon</h3>
+          <p class="chapter-where">Sydney</p>
+          <p class="chapter-note">Low sun across café tables, park lawns and garden benches.</p>
+          <p class="chapter-count">6 photos</p>
+        </div>
+        <div class="frames">
+          <figure class="frame" style="--ar:1.6705">
+            <button type="button" class="frame-btn" data-full="images/autumn-1-l.jpg" aria-label="View larger: Autumn afternoon, photo 1 of 6">
+              <img src="images/autumn-1-s.jpg" srcset="images/autumn-1-s.jpg 900w, images/autumn-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1440" height="862" alt="Woman in a burgundy sweater at a café table with flowers and food" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.6705">
+            <button type="button" class="frame-btn" data-full="images/autumn-2-l.jpg" aria-label="View larger: Autumn afternoon, photo 2 of 6">
+              <img src="images/autumn-2-s.jpg" srcset="images/autumn-2-s.jpg 900w, images/autumn-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1440" height="862" alt="Woman wrapped in a checked blanket on a sunlit lawn" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.6705">
+            <button type="button" class="frame-btn" data-full="images/autumn-3-l.jpg" aria-label="View larger: Autumn afternoon, photo 3 of 6">
+              <img src="images/autumn-3-s.jpg" srcset="images/autumn-3-s.jpg 900w, images/autumn-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1440" height="862" alt="Woman checking her phone at a café table beside a vase of flowers" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.9124">
+            <button type="button" class="frame-btn" data-full="images/autumn-4-l.jpg" aria-label="View larger: Autumn afternoon, photo 4 of 6">
+              <img src="images/autumn-4-s.jpg" srcset="images/autumn-4-s.jpg 900w, images/autumn-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1440" height="753" alt="Woman standing on the grass in low autumn light, a checked blanket over her arm" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5016">
+            <button type="button" class="frame-btn" data-full="images/autumn-5-l.jpg" aria-label="View larger: Autumn afternoon, photo 5 of 6">
+              <img src="images/autumn-5-s.jpg" srcset="images/autumn-5-s.jpg 900w, images/autumn-5-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1440" height="959" alt="Woman in a white dress on a wooden bench beside a paved garden path" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:1.5007">
+            <button type="button" class="frame-btn" data-full="images/autumn-6-l.jpg" aria-label="View larger: Autumn afternoon, photo 6 of 6">
+              <img src="images/autumn-6-s.jpg" srcset="images/autumn-6-s.jpg 900w, images/autumn-6-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1079" height="719" alt="Woman in white on a park bench beside a pond, looking away" loading="lazy" decoding="async">
+            </button>
+          </figure>
+        </div>
+      </section>
+
+      <section class="chapter" id="studio" data-title="Studio" aria-labelledby="studio-title">
+        <div class="chapter-head">
+          <h3 class="chapter-title" id="studio-title">Studio</h3>
+          <p class="chapter-where">Indoors</p>
+          <p class="chapter-note">A plain white set and soft light.</p>
+          <p class="chapter-count">1 photo</p>
+        </div>
+        <div class="frames frames--single">
+          <figure class="frame" style="--ar:0.6665">
+            <button type="button" class="frame-btn" data-full="images/studio-1-l.jpg" aria-label="View larger: Studio, photo 1 of 1">
+              <img src="images/studio-1-s.jpg" srcset="images/studio-1-s.jpg 900w, images/studio-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1333" height="2000" alt="Studio portrait of a woman in a white blouse, hands folded on a white table" loading="lazy" decoding="async">
+            </button>
+          </figure>
+        </div>
+      </section>
+
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="section-head">
+        <h2 class="section-title" id="about-title">About</h2>
+      </div>
+      <div class="about">
+        <div class="about-text">
+          <p>I’m Khoi Ngo, also known as Harry. I grew up in Vietnam and moved to Sydney to study Commerce at the University of Sydney, majoring in Digital Marketing and HR.</p>
+          <p>I started behind the camera on school media teams at Newton Grammar School, making photos, videos and livestreams for the school broadcasting page and the debate club, and leading media for the Fercaline rescue-pet project.</p>
+          <p>In Sydney I make content for the Vietnamese student community with SVAU and work as a marketing and social media intern. Most of my own work is portraits: graduates on campus, friends in áo dài, and concept shoots around the city.</p>
+        </div>
+        <div class="facts">
+          <div>
+            <h3>What I shoot</h3>
+            <ul>
+              <li>Graduation portraits</li>
+              <li>Áo dài and cultural portraits</li>
+              <li>Editorial and concept shoots</li>
+              <li>Lifestyle and outdoor portraits</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Media experience</h3>
+            <ul class="timeline">
+              <li><span class="when">2025 – now</span><span class="role">Marketing and social media intern<small>Expert Education &amp; Visa Services</small></span></li>
+              <li><span class="when">2021 – 2022</span><span class="role">Vice director of media<small>Fercaline project</small></span></li>
+              <li><span class="when">2021 – 2022</span><span class="role">Core media<small>NBS, Newton school broadcasting page</small></span></li>
+              <li><span class="when">2020 – 2022</span><span class="role">Vice core media<small>NSBS, school debate club</small></span></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Languages</h3>
+            <ul>
+              <li>English and Tiếng Việt</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="section-head">
+        <h2 class="section-title" id="contact-title">Book a shoot</h2>
+      </div>
+      <p class="contact-lead">Send me the date, the place and what you have in mind. Graduation and portrait sessions around Sydney.</p>
+      <div class="mail">
+        <a class="mail-addr" id="mail-addr" href="mailto:ngonhukhoi@gmail.com">ngonhukhoi@gmail.com</a>
+        <button type="button" class="copy" id="copy-mail" data-copy="ngonhukhoi@gmail.com">Copy email</button>
+      </div>
+      <ul class="links">
+        <li><a href="https://www.instagram.com/khoi_ngo_/" target="_blank" rel="noopener">Instagram<span>@khoi_ngo_</span></a></li>
+        <li><a href="https://www.tiktok.com/@like_nhu_khoi" target="_blank" rel="noopener">TikTok<span>@like_nhu_khoi</span></a></li>
+        <li><a href="https://www.linkedin.com/in/ngo-nhu-khoi-963633215/" target="_blank" rel="noopener">LinkedIn<span>Nhu Khoi Ngo</span></a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>© <span id="year">2026</span> Khoi Ngo. Please ask before using any photographs.</p>
+    <p><a href="#top">Back to top</a></p>
+  </footer>
+</div>
+
+<dialog class="lb" id="lightbox" aria-label="Photo viewer">
+  <div class="lb-top">
+    <p class="lb-caption"><b id="lb-title"></b><span id="lb-count"></span></p>
+    <button type="button" class="lb-close" id="lb-close">Close</button>
+  </div>
+  <div class="lb-stage" id="lb-stage">
+    <img class="lb-img" id="lb-img" alt="">
+    <button type="button" class="lb-nav lb-prev" id="lb-prev" aria-label="Previous photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M15 4 7 12l8 8"/></svg></button>
+    <button type="button" class="lb-nav lb-next" id="lb-next" aria-label="Next photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="m9 4 8 8-8 8"/></svg></button>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const frames = Array.from(document.querySelectorAll('.frame-btn'));
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lb-img');
+  const title = document.getElementById('lb-title');
+  const count = document.getElementById('lb-count');
+  const stage = document.getElementById('lb-stage');
+  let cur = 0, opener = null;
+
+  function show(i) {
+    cur = (i + frames.length) % frames.length;
+    const btn = frames[cur];
+    const thumb = btn.querySelector('img');
+    const chapter = btn.closest('.chapter');
+    const siblings = Array.from(chapter.querySelectorAll('.frame-btn'));
+    img.src = btn.dataset.full;
+    img.alt = thumb.alt;
+    img.width = thumb.getAttribute('width');
+    img.height = thumb.getAttribute('height');
+    title.textContent = chapter.dataset.title;
+    count.textContent = (siblings.indexOf(btn) + 1) + ' / ' + siblings.length;
+    [cur + 1, cur - 1].forEach(j => { const b = frames[(j + frames.length) % frames.length]; new Image().src = b.dataset.full; });
+  }
+  function open(i) {
+    opener = frames[i];
+    show(i);
+    if (typeof lb.showModal === 'function') lb.showModal(); else lb.setAttribute('open', '');
+  }
+  function close() {
+    if (typeof lb.close === 'function') lb.close(); else lb.removeAttribute('open');
+  }
+  lb.addEventListener('close', () => { if (opener) opener.focus(); });
+
+  frames.forEach((b, i) => b.addEventListener('click', () => open(i)));
+  document.getElementById('lb-prev').addEventListener('click', () => show(cur - 1));
+  document.getElementById('lb-next').addEventListener('click', () => show(cur + 1));
+  document.getElementById('lb-close').addEventListener('click', close);
+  stage.addEventListener('click', e => { if (e.target === stage) close(); });
+  img.addEventListener('click', () => show(cur + 1));
+  lb.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); show(cur + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(cur - 1); }
+  });
+
+  let x0 = null;
+  stage.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 45) show(cur + (dx < 0 ? 1 : -1));
+  });
+
+  const copyBtn = document.getElementById('copy-mail');
+  copyBtn.addEventListener('click', () => {
+    const text = copyBtn.dataset.copy;
+    const done = () => { copyBtn.textContent = 'Copied'; setTimeout(() => { copyBtn.textContent = 'Copy email'; }, 1800); };
+    const fallback = () => {
+      const r = document.createRange(); r.selectNodeContents(document.getElementById('mail-addr'));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      copyBtn.textContent = 'Selected, press Ctrl+C or ⌘C';
+    };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* Justified rows: choose row breaks so every row fills the width at a height
+     close to the target, then size each photo to that row height. */
+  function justify(box) {
+    const figs = Array.from(box.querySelectorAll('.frame'));
+    const W = box.clientWidth;
+    if (figs.length < 2 || !W || box._w === W) return;
+    box._w = W;
+    const gap = parseFloat(getComputedStyle(box).columnGap) || 8;
+    const T = W >= 600 ? Math.max(220, Math.min(300, W * 0.28)) : 230;
+    const maxH = Math.min(T * 1.8, window.innerHeight * 0.85);
+    const perRow = W >= 600 ? 4 : 3;
+    const ar = figs.map(f => parseFloat(f.style.getPropertyValue('--ar')) || 1);
+    const fillH = (i, j) => { let s = 0; for (let k = i; k < j; k++) s += ar[k]; return (W - gap * (j - i - 1)) / s; };
+    const n = ar.length, cost = [0], from = [0];
+    for (let j = 1; j <= n; j++) {
+      cost[j] = Infinity;
+      for (let i = Math.max(0, j - perRow); i < j; i++) {
+        const c = cost[i] + Math.pow(fillH(i, j) - T, 2);
+        if (c < cost[j]) { cost[j] = c; from[j] = i; }
+      }
+    }
+    const rows = [];
+    for (let j = n; j > 0; j = from[j]) rows.unshift([from[j], j]);
+    rows.forEach(([i, j]) => {
+      const h = Math.min(fillH(i, j), maxH);
+      for (let k = i; k < j; k++) {
+        figs[k].style.width = (Math.floor(ar[k] * h * 100) / 100) + 'px';
+        figs[k].classList.toggle('row-end', k === j - 1 && h < maxH);
+      }
+    });
+    box.classList.add('is-justified');
+  }
+  const boxes = Array.from(document.querySelectorAll('.frames:not(.frames--single)'));
+  let raf = 0;
+  const relayout = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => boxes.forEach(justify)); };
+  relayout();
+  if ('ResizeObserver' in window) { const ro = new ResizeObserver(relayout); boxes.forEach(b => ro.observe(b)); }
+  else window.addEventListener('resize', relayout);
+})();
+</script>
+</body>
+</html>
