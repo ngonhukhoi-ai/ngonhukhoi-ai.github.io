@@ -13,9 +13,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;300;400;500&display=swap">
 <style>
-/* Layout: the page is a stack of full-width slides. The first is Khoi's portrait in a viewfinder frame, which
-   grows to full screen as you scroll; then each slide rides up over the one before while the covered one zooms
-   out and dims. Every slide is black or white; 3D objects and film-strip marks carry the photography details. */
+/* Layout: the page is a stack of full-width slides. The first is Khoi's portrait in a viewfinder frame, revealed
+   once when the site opens; then each slide rides up over the one before while the covered one zooms out and dims.
+   Every slide is black or white; 3D objects and film-strip marks carry the photography details. */
 :root {
   --bg: #FFFFFF;          /* paper */
   --fg: #000000;          /* ink */
@@ -109,7 +109,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 
 /* ---------- first slide: portrait in a viewfinder frame ---------- */
 .hero-stage { position: relative; background: var(--bg); color: var(--fg); overflow: hidden; }
-.motion .hero-pin { height: 290svh; }
+.motion .hero-pin { height: 200svh; }
 .motion .hero-stage { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; }
 .motion .hero-stage > .wrap { flex: 1; display: flex; flex-direction: column; width: 100%; }
 .motion .hero-pin + main > .anchor:first-child { margin-top: -100svh; }
@@ -170,7 +170,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 }
 .hero-word > span { display: inline-block; animation: rise 1.3s var(--ease) .5s both; }
 .w2 > span { animation-delay: .62s; }
-.hero-copy { grid-area: copy; justify-self: start; display: grid; gap: 14px; max-width: 30ch; position: relative; z-index: 1; animation: fadeup 1.1s var(--ease) 1.1s both; }
+.hero-copy { grid-area: copy; justify-self: start; display: grid; gap: 14px; max-width: 30ch; position: relative; z-index: 1; animation: fadeup 1.1s var(--ease) 1s both; }
 .hero-line { font-size: var(--s1); line-height: 1.4; text-wrap: balance; }
 .hero-more { color: var(--muted); }
 .hero-more a { color: var(--fg); white-space: nowrap; }
@@ -179,13 +179,14 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 
 .shot-slot { grid-area: shot; position: relative; z-index: 2; height: min(74svh, 780px); aspect-ratio: 3 / 4; max-width: 100%; }
 .shot { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; background: var(--well); transform-style: preserve-3d; }
-.shot-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 46% 52%; animation: develop 3.2s ease 1.1s both; }
-.shutter { position: absolute; inset: 0; pointer-events: none; }
-.shutter::before, .shutter::after { content: ""; position: absolute; left: 0; right: 0; height: 50.5%; background: #000; transform: scaleY(0); }
-.shutter::before { top: 0; transform-origin: top; }
-.shutter::after { bottom: 0; transform-origin: bottom; }
-.motion .shutter::before, .motion .shutter::after { animation: shutter 1s cubic-bezier(.7, 0, .2, 1) .15s both; }
-@keyframes shutter { from { transform: scaleY(1); } to { transform: scaleY(0); } }
+.shot-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 46% 52%; }
+/* on opening: the frame wipes up into view, the photo settles from a gentle zoom and develops into colour */
+.motion .shot { animation: reveal 1.3s cubic-bezier(.7, 0, .2, 1) .2s both; }
+.motion .shot-img { animation: settle 2s var(--ease) .2s both, develop 2.8s ease .7s both; }
+.motion .hud-layer { animation: fadein .9s ease 1.3s both; }
+@keyframes reveal { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes settle { from { transform: scale(1.14); } to { transform: none; } }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
 
 /* viewfinder marks over the photo */
 .hud { position: absolute; inset: 0; pointer-events: none; color: var(--hud); text-shadow: 0 1px 6px rgba(0, 0, 0, .45); }
@@ -203,7 +204,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
     linear-gradient(var(--c), var(--c)) 0 100% / var(--l) var(--t) no-repeat, linear-gradient(var(--c), var(--c)) 0 100% / var(--t) var(--l) no-repeat,
     linear-gradient(var(--c), var(--c)) 100% 100% / var(--l) var(--t) no-repeat, linear-gradient(var(--c), var(--c)) 100% 100% / var(--t) var(--l) no-repeat;
 }
-.motion .hud-af { animation: focus .7s var(--ease) 1.25s both; }
+.motion .hud-af { animation: focus .7s var(--ease) 1.5s both; }
 @keyframes focus { 0% { scale: 1.7; opacity: 0; } 55% { scale: .9; opacity: 1; } 100% { scale: 1; opacity: 1; } }
 .hud-row { position: absolute; left: 46px; right: 46px; bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: var(--s-2); letter-spacing: 0.12em; font-variant-numeric: tabular-nums; }
 .hud-scale { display: flex; align-items: flex-end; gap: 5px; }
@@ -460,7 +461,6 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
                 <div class="hud-row"><span>01</span><span class="hud-scale"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span>Sydney</span></div>
               </div>
             </div>
-            <div class="shutter" aria-hidden="true"></div>
           </div>
           <div class="float float-a" data-object="camera" aria-hidden="true"></div>
           <div class="float float-b" data-object="film" aria-hidden="true"></div>
@@ -503,7 +503,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
       </div>
       <div class="section-head">
         <h2 class="section-title" id="work-title">Work</h2>
-        <p class="section-sub">Eight shoots, 37 photographs</p>
+        <p class="section-sub">Eight shoots, 36 photographs</p>
       </div>
       <ul class="index">
         <li>
@@ -551,7 +551,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
             <img class="idx-thumb" src="images/waterfront-1-s.jpg" width="1500" height="2000" alt="" loading="lazy" decoding="async">
             <span class="idx-title">Waterfront</span>
             <span class="idx-where">Sydney</span>
-            <span class="idx-count">4 photos</span>
+            <span class="idx-count">3 photos</span>
           </a>
         </li>
         <li>
@@ -790,27 +790,22 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
             <h3 class="chapter-title" id="waterfront-title">Waterfront</h3>
             <p class="chapter-where">Sydney</p>
             <p class="chapter-note">Bright sun, sandstone blocks and the water behind.</p>
-            <p class="chapter-count">4 photos</p>
+            <p class="chapter-count">3 photos</p>
           </div>
           <div class="frames">
           <figure class="frame" style="--ar:0.75;--d:0ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-1-l.jpg" aria-label="View larger: Waterfront, photo 1 of 4">
+            <button type="button" class="frame-btn" data-full="images/waterfront-1-l.jpg" aria-label="View larger: Waterfront, photo 1 of 3">
               <img src="images/waterfront-1-s.jpg" srcset="images/waterfront-1-s.jpg 900w, images/waterfront-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in a black top sitting on harbour rocks, holding a small green camera" loading="lazy" decoding="async">
             </button>
           </figure>
           <figure class="frame" style="--ar:0.75;--d:80ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-2-l.jpg" aria-label="View larger: Waterfront, photo 2 of 4">
-              <img src="images/waterfront-2-s.jpg" srcset="images/waterfront-2-s.jpg 900w, images/waterfront-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Two frames by the water: standing on sandstone blocks with apartment towers across the bay, and holding a small green camera up beside her face" loading="lazy" decoding="async">
+            <button type="button" class="frame-btn" data-full="images/waterfront-2-l.jpg" aria-label="View larger: Waterfront, photo 2 of 3">
+              <img src="images/waterfront-2-s.jpg" srcset="images/waterfront-2-s.jpg 900w, images/waterfront-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman at the edge of the frame, arm raised behind her head, the harbour behind" loading="lazy" decoding="async">
             </button>
           </figure>
           <figure class="frame" style="--ar:0.75;--d:160ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-3-l.jpg" aria-label="View larger: Waterfront, photo 3 of 4">
-              <img src="images/waterfront-3-s.jpg" srcset="images/waterfront-3-s.jpg 900w, images/waterfront-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman at the edge of the frame, arm raised behind her head, the harbour behind" loading="lazy" decoding="async">
-            </button>
-          </figure>
-          <figure class="frame" style="--ar:0.75;--d:240ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-4-l.jpg" aria-label="View larger: Waterfront, photo 4 of 4">
-              <img src="images/waterfront-4-s.jpg" srcset="images/waterfront-4-s.jpg 900w, images/waterfront-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman sitting on a sandstone ledge, the harbour and a bridge behind" loading="lazy" decoding="async">
+            <button type="button" class="frame-btn" data-full="images/waterfront-3-l.jpg" aria-label="View larger: Waterfront, photo 3 of 3">
+              <img src="images/waterfront-3-s.jpg" srcset="images/waterfront-3-s.jpg 900w, images/waterfront-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman sitting on a sandstone ledge, the harbour and a bridge behind" loading="lazy" decoding="async">
             </button>
           </figure>
           </div>
@@ -1042,43 +1037,28 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 
   /* ---------- slides: the portrait grows to full screen, then each slide rides over the one before ---------- */
   const heroStage = document.querySelector('.hero-stage');
-  const slot = document.querySelector('.shot-slot');
   const shot = document.querySelector('.shot');
   const hudLayer = document.querySelector('.hud-layer');
-  const af = document.querySelector('.hud-af');
-  const w1 = document.querySelector('.w1'), w2 = document.querySelector('.w2');
-  const floatA = document.querySelector('.float-a'), floatB = document.querySelector('.float-b');
-  const fades = Array.from(document.querySelectorAll('.hero-copy, .bar, .hero-cue, .filmedge, .reg'));
   const filmTrack = document.querySelector('.filmedge-track');
   const filmEdges = Array.from(document.querySelectorAll('.filmedge'));
   const slides = Array.from(document.querySelectorAll('main > .panel'));
   const stack = [heroStage].concat(slides);
   const bands = Array.from(document.querySelectorAll('.shift'));
   const track = document.querySelector('.ticker-track');
-  let W = 0, H = 0, box = { x: 0, y: 0, w: 1, h: 1 }, pinned = false, zoom = 0;
+  let W = 0, H = 0, pinned = false;
   let natural = [], stuckTop = [];   // each slide's place in the page before sticking, and where it sticks
   const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
   window.__knPointer = tilt;
 
-  if (!calm) {
-    root.classList.add('motion');
-    // load fades would override the scroll fades, so drop each once it has played
-    fades.concat([floatA, floatB]).forEach(el => el && el.addEventListener('animationend', e => {
-      if (e.target !== el) return;
-      el.style.animation = 'none'; el.style.opacity = '1';
-    }));
-  }
+  if (!calm) root.classList.add('motion');
 
   function measure() {
     W = root.clientWidth; H = window.innerHeight;
     if (calm) return;
     root.classList.remove('no-pin');
     heroStage.style.transform = '';
-    ['left', 'top', 'width', 'height'].forEach(k => { shot.style[k] = ''; });
     pinned = heroStage.scrollHeight <= heroStage.clientHeight + 2;
     root.classList.toggle('no-pin', !pinned);
-    const s = heroStage.getBoundingClientRect(), r = slot.getBoundingClientRect();
-    box = { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height };
     const sy = window.scrollY;
     slides.forEach((el, i) => {
       const h = el.offsetHeight, top = el.classList.contains('slide') ? Math.min(0, H - h) : 0;
@@ -1091,36 +1071,13 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   }
 
   function applyTilt() {
-    const k = 1 - zoom;
-    shot.style.transform = 'perspective(1600px) rotateY(' + (tilt.x * 3 * k).toFixed(2) + 'deg) rotateX(' + (-tilt.y * 2.4 * k).toFixed(2) + 'deg)';
-    hudLayer.style.transform = 'translate3d(' + (tilt.x * 9 * k).toFixed(1) + 'px,' + (tilt.y * 9 * k).toFixed(1) + 'px,0)';
+    shot.style.transform = 'perspective(1600px) rotateY(' + (tilt.x * 3).toFixed(2) + 'deg) rotateX(' + (-tilt.y * 2.4).toFixed(2) + 'deg)';
+    hudLayer.style.transform = 'translate3d(' + (tilt.x * 9).toFixed(1) + 'px,' + (tilt.y * 9).toFixed(1) + 'px,0)';
   }
 
   function frame() {
     const y = window.scrollY;
     if (calm) return;
-    if (pinned) {
-      const z = clamp(y / (H * 0.9), 0, 1), e = inOut(z);
-      zoom = e;
-      if (e > 0) {
-        shot.style.left = (-box.x * e).toFixed(1) + 'px';
-        shot.style.top = (-box.y * e).toFixed(1) + 'px';
-        shot.style.width = (box.w + (W - box.w) * e).toFixed(1) + 'px';
-        shot.style.height = (box.h + (H - box.h) * e).toFixed(1) + 'px';
-      } else { ['left', 'top', 'width', 'height'].forEach(k => { shot.style[k] = ''; }); }
-      w1.style.transform = 'translate3d(' + (-e * W * 0.55).toFixed(1) + 'px,0,0)';
-      w2.style.transform = 'translate3d(' + (e * W * 0.55).toFixed(1) + 'px,0,0)';
-      w1.style.opacity = w2.style.opacity = clamp(1 - e * 1.4, 0, 1).toFixed(3);
-      fades.forEach(el => { if (el.style.animation === 'none' || !el.getAnimations || !el.getAnimations().length) el.style.opacity = clamp(1 - z * 3, 0, 1).toFixed(3); });
-      af.style.opacity = clamp(1 - e * 4, 0, 1).toFixed(3);
-      [[floatA, 0.42, -0.4, 0.9], [floatB, -0.42, 0.36, 0.7]].forEach(([el, dx, dy, grow]) => {
-        if (!el) return;
-        el.style.translate = (e * W * dx).toFixed(1) + 'px ' + (e * H * dy).toFixed(1) + 'px';
-        el.style.scale = (1 + e * grow).toFixed(3);
-        if (el.style.animation === 'none') el.style.opacity = clamp(1 - e * 1.5, 0, 1).toFixed(3);
-      });
-      applyTilt();
-    }
     // the film edges advance as you scroll
     filmEdges.forEach(f => f.style.setProperty('--film', (-y * 0.6).toFixed(1) + 'px'));
     if (filmTrack) filmTrack.style.transform = 'translate3d(0,' + (-(y * 0.6) % (filmTrack.offsetHeight / 2 || 1)).toFixed(1) + 'px,0)';
