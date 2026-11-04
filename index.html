@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Khoi Ngo Photography</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Khoi Ngo is a portrait photographer in Sydney: graduations, áo dài and editorial shoots.">
+<meta name="description" content="Khoi Ngo is a photographer and videographer in Sydney: portraits, graduations, áo dài and editorial shoots, on digital and film.">
 <meta property="og:title" content="Khoi Ngo Photography">
-<meta property="og:description" content="Portrait photographer in Sydney: graduations, áo dài and editorial shoots.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 48'%3E%3Cpath d='M0 48V19A19 19 0 0 1 16 0a19 19 0 0 1 16 19v29z' fill='%23000'/%3E%3C/svg%3E">
+<meta property="og:description" content="Photographer and videographer in Sydney: portraits, graduations, áo dài and editorial shoots.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11.5' fill='%23000'/%3E%3Cpath d='M12 6.8 16.5 9.4v5.2L12 17.2l-4.5-2.6V9.4z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;300;400;500&display=swap">
 <style>
-/* Layout: the page is a stack of full-width slides. Scrolling zooms through the hero arch, then each slide
-   rides up over the one before while the covered slide zooms out and dims. Each slide is black or white. */
+/* Layout: the page is a stack of full-width slides. The first is Khoi's portrait in a viewfinder frame, which
+   grows to full screen as you scroll; then each slide rides up over the one before while the covered one zooms
+   out and dims. Every slide is black or white; 3D objects and film-strip marks carry the photography details. */
 :root {
   --bg: #FFFFFF;          /* paper */
   --fg: #000000;          /* ink */
@@ -24,20 +25,22 @@
   --void: #000000;        /* what shows behind a slide as it zooms out */
   --veil: #000000;        /* photo viewer, black in every tone */
   --veil-ink: #F2F2F2;
+  --hud: #FFFFFF;         /* viewfinder marks, always drawn over a photo */
 
   --font: "Be Vietnam Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --s-2: 0.6875rem;
   --s-1: 0.8125rem;
   --s0: 1.0625rem;
   --s1: 1.25rem;
   --s2: 1.75rem;
   --s3: 2.375rem;
   --s4: 3.25rem;
-  --display: clamp(4rem, 10.5vw, 11.5rem);
   --ease: cubic-bezier(.2, .7, .1, 1);
 
   --gutter: clamp(16px, 4vw, 56px);
   --radius: clamp(18px, 2.4vw, 36px);
   --row: 150px;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   color-scheme: light;
 }
 [data-tone="light"] { --bg: #FFFFFF; --fg: #000000; --muted: #6F6F6F; --line: #E2E2E2; --well: #EEEEEE; color-scheme: light; }
@@ -69,7 +72,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
   padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
 }
-.glyph { display: inline-block; height: 0.62em; width: auto; vertical-align: baseline; overflow: visible; }
+.glyph { display: inline-block; height: 0.62em; width: 0.62em; vertical-align: baseline; overflow: visible; }
 .anchor { display: block; height: 0; }
 
 /* ---------- slides ---------- */
@@ -82,105 +85,180 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   box-shadow: 0 -1px 0 var(--line), 0 -28px 60px -24px rgba(0, 0, 0, 0.35);
 }
 .panel::after, .hero-stage::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 6;
   background: #000; opacity: var(--cover, 0); border-radius: inherit;
 }
 .motion .panel.slide { position: sticky; top: 0; }
+/* film grain on the black slides */
+.hero-stage::before, .shift::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 5;
+  background-image: var(--grain); opacity: 0.07;
+}
+.motion .hero-stage::before, .motion .shift::before { animation: grain 0.9s steps(5) infinite; }
+@keyframes grain { 0% { background-position: 0 0; } 20% { background-position: -54px 39px; } 40% { background-position: 71px -86px; } 60% { background-position: -37px -66px; } 80% { background-position: 95px 112px; } 100% { background-position: 0 0; } }
 
 /* ---------- top bar ---------- */
-.bar { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-block: 20px; }
-.bar-name { display: inline-flex; align-items: baseline; gap: 0.45em; font-weight: 500; text-decoration: none; letter-spacing: 0.01em; }
-.bar-name .glyph { height: 0.8em; width: 0.53em; }
-.bar nav { display: flex; gap: clamp(16px, 3vw, 36px); }
+.bar { position: relative; z-index: 4; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-block: 20px; }
+.bar-name { display: inline-flex; align-items: center; gap: 0.5em; font-weight: 500; text-decoration: none; letter-spacing: 0.01em; white-space: nowrap; }
+.bar-name .glyph { width: 1.05em; height: 1.05em; }
+.bar nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px clamp(14px, 3vw, 36px); }
 .bar nav a { text-decoration: none; color: var(--muted); transition: color .3s; }
 .bar nav a:hover { color: var(--fg); }
+.motion-toggle { font: inherit; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color .3s; }
+.motion-toggle:hover { color: var(--fg); }
 
-/* ---------- hero: name either side of a sandstone arch; scrolling zooms through the arch ---------- */
+/* ---------- first slide: portrait in a viewfinder frame ---------- */
 .hero-stage { position: relative; background: var(--bg); color: var(--fg); overflow: hidden; }
 .motion .hero-pin { height: 290svh; }
-.motion .hero-stage { position: sticky; top: 0; height: 100svh; }
+.motion .hero-stage { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; }
+.motion .hero-stage > .wrap { flex: 1; display: flex; flex-direction: column; width: 100%; }
 .motion .hero-pin + main > .anchor:first-child { margin-top: -100svh; }
 .no-pin .hero-pin { height: auto !important; }
 .no-pin .hero-stage { position: relative !important; height: auto !important; }
 .no-pin .hero-pin + main > .anchor:first-child { margin-top: 0 !important; }
 
+/* background details: rule-of-thirds guides, crop marks and moving film edges */
+.hero-bg { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.thirds { position: absolute; inset: 0;
+  background:
+    linear-gradient(var(--line), var(--line)) 33.333% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--line), var(--line)) 66.666% 0 / 1px 100% no-repeat,
+    linear-gradient(var(--line), var(--line)) 0 33.333% / 100% 1px no-repeat,
+    linear-gradient(var(--line), var(--line)) 0 66.666% / 100% 1px no-repeat; }
+.reg { position: absolute; width: 15px; height: 15px; translate: -50% -50%;
+  background: linear-gradient(var(--muted), var(--muted)) center / 1px 100% no-repeat, linear-gradient(var(--muted), var(--muted)) center / 100% 1px no-repeat; }
+.hero-bg { --ci: 10px; }
+.crop { position: absolute; width: 20px; height: 20px; border: 0 solid var(--muted); }
+.crop.tl { left: var(--ci); top: 10px; border-left-width: 1px; border-top-width: 1px; }
+.crop.tr { right: var(--ci); top: 10px; border-right-width: 1px; border-top-width: 1px; }
+.crop.bl { left: var(--ci); bottom: 10px; border-left-width: 1px; border-bottom-width: 1px; }
+.crop.br { right: var(--ci); bottom: 10px; border-right-width: 1px; border-bottom-width: 1px; }
+.filmedge {
+  position: absolute; top: 0; bottom: 0; width: 32px; overflow: hidden;
+  border-inline: 1px solid var(--line);
+  background: repeating-linear-gradient(to bottom, var(--muted) 0 11px, transparent 11px 26px) var(--fx, 7px) var(--film, 0px) / 8px 26px repeat-y;
+}
+.filmedge.left { left: env(safe-area-inset-left, 0px); border-left: 0; --fx: 12px; }
+.filmedge.right { right: env(safe-area-inset-right, 0px); border-right: 0; --fx: 20px; }
+.filmedge-track {
+  position: absolute; left: 3px; top: 0; writing-mode: vertical-rl;
+  font-size: 9px; letter-spacing: 0.22em; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums;
+  will-change: transform;
+}
+.filmedge.left .filmedge-track { display: none; }
+@media (max-width: 1199px) { .filmedge { display: none; } }
+@media (max-width: 899px) { .reg { display: none; } }
+@media (min-width: 1200px) { .hero-bg { --ci: 44px; } }
+
 .hero {
+  position: relative; z-index: 1;
+  flex: 1;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-areas: "w1 arch w2" "line arch more";
-  grid-template-rows: 1fr auto;
-  column-gap: clamp(20px, 3vw, 44px);
-  row-gap: 20px;
-  padding-block: clamp(16px, 4vw, 40px) clamp(40px, 6vw, 80px);
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-areas: "name shot copy";
+  align-items: end;
+  align-content: center;
+  column-gap: clamp(28px, 4vw, 64px);
+  padding-block: 8px clamp(36px, 6svh, 72px);
 }
+.hero-name { grid-area: name; justify-self: start; display: flex; flex-direction: column; position: relative; z-index: 1; }
 .hero-word {
-  align-self: end;
-  overflow: hidden;
-  font-size: var(--display);
-  font-weight: 200;
-  line-height: 0.8;
-  letter-spacing: -0.045em;
-  padding-bottom: 0.13em; /* room for the g descender */
+  display: block; overflow: hidden;
+  font-size: clamp(4rem, 9.6vw, 10.5rem);
+  font-weight: 200; line-height: 0.82; letter-spacing: -0.045em;
+  padding-bottom: 0.12em;
 }
-.hero-word > span { display: inline-block; animation: rise 1.3s var(--ease) .15s both; }
-.w2 > span { animation-delay: .3s; }
-.w1 { grid-area: w1; justify-self: end; }
-.w2 { grid-area: w2; justify-self: start; }
-.arch {
-  grid-area: arch;
-  position: relative;
-  z-index: 1;
-  width: min(30vw, 46svh);
-  aspect-ratio: 2 / 3;
-  max-width: 100%;
-  clip-path: url(#arch);
-  overflow: hidden;
-  background: var(--well);
-  transform-origin: 50% 46%;
-}
-.arch img {
-  width: 100%; height: 100%; object-fit: cover; object-position: 48% 50%; display: block;
-  animation: settle 2.6s var(--ease) both, develop 3.2s ease .5s both;
-}
-.hero-line { grid-area: line; justify-self: end; text-align: right; max-width: 22ch; font-size: var(--s1); line-height: 1.4; text-wrap: balance; }
-.hero-more { grid-area: more; justify-self: start; max-width: 34ch; color: var(--muted); }
+.hero-word > span { display: inline-block; animation: rise 1.3s var(--ease) .5s both; }
+.w2 > span { animation-delay: .62s; }
+.hero-copy { grid-area: copy; justify-self: start; display: grid; gap: 14px; max-width: 30ch; position: relative; z-index: 1; animation: fadeup 1.1s var(--ease) 1.1s both; }
+.hero-line { font-size: var(--s1); line-height: 1.4; text-wrap: balance; }
+.hero-more { color: var(--muted); }
 .hero-more a { color: var(--fg); white-space: nowrap; }
-.hero-line, .hero-more { animation: fadeup 1.1s var(--ease) .8s both; }
-.hero-cue { position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); font-size: var(--s-1); color: var(--muted); display: none; }
-.motion .hero-cue { display: block; animation: fadeup 1s var(--ease) 1.6s both; }
+.hero-cue { position: absolute; z-index: 4; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); font-size: var(--s-1); color: var(--muted); display: none; }
+.motion .hero-cue { display: block; animation: fadeup 1s var(--ease) 2s both; }
+
+.shot-slot { grid-area: shot; position: relative; z-index: 2; height: min(74svh, 780px); aspect-ratio: 3 / 4; max-width: 100%; }
+.shot { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; background: var(--well); transform-style: preserve-3d; }
+.shot-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 46% 52%; animation: develop 3.2s ease 1.1s both; }
+.shutter { position: absolute; inset: 0; pointer-events: none; }
+.shutter::before, .shutter::after { content: ""; position: absolute; left: 0; right: 0; height: 50.5%; background: #000; transform: scaleY(0); }
+.shutter::before { top: 0; transform-origin: top; }
+.shutter::after { bottom: 0; transform-origin: bottom; }
+.motion .shutter::before, .motion .shutter::after { animation: shutter 1s cubic-bezier(.7, 0, .2, 1) .15s both; }
+@keyframes shutter { from { transform: scaleY(1); } to { transform: scaleY(0); } }
+
+/* viewfinder marks over the photo */
+.hud { position: absolute; inset: 0; pointer-events: none; color: var(--hud); text-shadow: 0 1px 6px rgba(0, 0, 0, .45); }
+.hud-c { position: absolute; width: 24px; height: 24px; border: 0 solid var(--hud); opacity: .92; }
+.hud-c.tl { left: 14px; top: 14px; border-left-width: 1.5px; border-top-width: 1.5px; }
+.hud-c.tr { right: 14px; top: 14px; border-right-width: 1.5px; border-top-width: 1.5px; }
+.hud-c.bl { left: 14px; bottom: 14px; border-left-width: 1.5px; border-bottom-width: 1.5px; }
+.hud-c.br { right: 14px; bottom: 14px; border-right-width: 1.5px; border-bottom-width: 1.5px; }
+.hud-af {
+  position: absolute; left: 37%; top: 50%; width: 66px; height: 66px; translate: -50% -50%;
+  --c: var(--hud); --t: 1.5px; --l: 14px;
+  background:
+    linear-gradient(var(--c), var(--c)) 0 0 / var(--l) var(--t) no-repeat, linear-gradient(var(--c), var(--c)) 0 0 / var(--t) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 0 / var(--l) var(--t) no-repeat, linear-gradient(var(--c), var(--c)) 100% 0 / var(--t) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 100% / var(--l) var(--t) no-repeat, linear-gradient(var(--c), var(--c)) 0 100% / var(--t) var(--l) no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 100% / var(--l) var(--t) no-repeat, linear-gradient(var(--c), var(--c)) 100% 100% / var(--t) var(--l) no-repeat;
+}
+.motion .hud-af { animation: focus .7s var(--ease) 1.25s both; }
+@keyframes focus { 0% { scale: 1.7; opacity: 0; } 55% { scale: .9; opacity: 1; } 100% { scale: 1; opacity: 1; } }
+.hud-row { position: absolute; left: 46px; right: 46px; bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: var(--s-2); letter-spacing: 0.12em; font-variant-numeric: tabular-nums; }
+.hud-scale { display: flex; align-items: flex-end; gap: 5px; }
+.hud-scale i { display: block; width: 1px; height: 5px; background: var(--hud); }
+.hud-scale i:nth-child(5) { height: 10px; }
+.hud-layer { position: absolute; inset: 0; }
+
+/* floating 3D objects around the portrait */
+.float { position: absolute; z-index: 3; aspect-ratio: 1; pointer-events: none; }
+.float-a { width: 52%; right: -36%; top: -7%; }
+.float-b { width: 40%; left: -30%; bottom: 7%; }
+.float .stage-canvas, .shift-stage .stage-canvas { display: block; width: 100%; height: 100%; }
+.float { animation: fadeup 1.2s var(--ease) 1.5s both; }
 
 @keyframes rise    { from { transform: translateY(105%); } to { transform: none; } }
-@keyframes settle  { from { transform: scale(1.1); } to { transform: none; } }
-@keyframes develop { from { filter: grayscale(1) contrast(1.12) brightness(1.04); } to { filter: none; } }
+@keyframes develop { from { filter: grayscale(1) contrast(1.15) brightness(.9); } to { filter: none; } }
 @keyframes fadeup  { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
 @media (max-width: 899px) {
   .hero {
-    grid-template-columns: auto minmax(0, 1fr);
-    grid-template-areas: "arch arch" "w1 w2" "line line" "more more";
-    grid-template-rows: auto;
-    column-gap: 4.6vw;
-    row-gap: 12px;
-    padding-block: 4px 56px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "shot" "name" "copy";
+    align-items: start;
+    row-gap: 14px;
+    padding-block: 2px 52px;
   }
-  .hero-word { font-size: clamp(3.5rem, 19vw, 6.5rem); padding-top: 8px; }
-  .w1 { justify-self: start; }
-  .arch { width: min(100%, 440px, 38svh); justify-self: center; }
-  .hero-line, .hero-more { justify-self: start; text-align: left; max-width: 40ch; }
-  .hero-line { margin-top: 4px; }
+  .shot-slot { justify-self: center; height: auto; width: min(100%, 420px, 40.5svh); }
+  .hero-name { flex-direction: row; column-gap: 4.4vw; }
+  .bar nav { column-gap: 14px; }
+  .motion-toggle { font-size: var(--s-1); }
+  .hero-word { font-size: clamp(3.2rem, 17vw, 6rem); }
+  .hero-copy { max-width: 40ch; gap: 8px; }
+  .float-a { width: 40%; right: -12%; top: -6%; }
+  .float-b { width: 32%; left: -11%; bottom: 4%; }
+  .hud-row { left: 40px; right: 40px; }
 }
 
-/* ---------- transition slides with a 3D object ---------- */
+/* ---------- transition slides with a 3D object on a strip of film ---------- */
 .shift-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: clamp(16px, 3vw, 40px);
   min-height: clamp(340px, 72svh, 720px);
+  position: relative; z-index: 1;
 }
-.shift-stage { width: clamp(180px, 32svh, 300px); aspect-ratio: 1; max-width: 100%; }
-.stage-canvas { display: block; width: 100%; height: 100%; }
-.shift-line { height: 1px; background: var(--fg); transform: scaleX(var(--p, 1)); }
+.shift-stage { width: clamp(190px, 34svh, 320px); aspect-ratio: 1; max-width: 100%; }
+.shift-line {
+  height: 30px; opacity: .6;
+  transform: scaleX(var(--p, 1));
+  border-block: 1px solid var(--fg);
+  background:
+    repeating-linear-gradient(90deg, var(--fg) 0 9px, transparent 9px 21px) 0 5px / 100% 6px no-repeat,
+    repeating-linear-gradient(90deg, var(--fg) 0 9px, transparent 9px 21px) 0 calc(100% - 5px) / 100% 6px no-repeat;
+}
 .shift-line:first-child { transform-origin: right center; }
 .shift-line:last-child { transform-origin: left center; }
 
@@ -194,11 +272,11 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 /* ---------- moving line of shoot types ---------- */
 .ticker { width: 100vw; margin-left: calc(50% - 50vw); overflow: hidden; margin-bottom: clamp(36px, 6vw, 72px); }
 .ticker-track {
-  display: inline-flex; align-items: baseline; gap: 0.35em; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 0.35em; white-space: nowrap;
   font-size: clamp(3rem, 9vw, 8.5rem); font-weight: 200; line-height: 1.05; letter-spacing: -0.03em;
   padding-left: 4vw; will-change: transform;
 }
-.ticker-track .glyph { height: 0.6em; width: 0.4em; margin-inline: 0.12em; }
+.ticker-track .glyph { width: 0.5em; height: 0.5em; margin-inline: 0.12em; }
 
 /* ---------- work index ---------- */
 .index { list-style: none; margin: 0; padding: 0; }
@@ -282,11 +360,11 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 .mail-addr { font-size: clamp(1.6rem, 5vw, var(--s4)); font-weight: 200; letter-spacing: -0.02em; line-height: 1.15; overflow-wrap: anywhere; text-decoration: none; }
 .copy { font: inherit; font-size: var(--s-1); color: var(--fg); background: none; border: 1px solid var(--fg); border-radius: 999px; padding: 6px 14px; cursor: pointer; transition: background-color .3s, color .3s; }
 .copy:hover { background: var(--fg); color: var(--bg); }
-.links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-top: 1px solid var(--line); }
+.links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); border-top: 1px solid var(--line); }
 .links li { border-bottom: 1px solid var(--line); }
 .links a { display: grid; gap: 2px; padding: 14px 12px; text-decoration: none; transition: background-color .4s, color .4s; }
 .links a:hover { background: var(--fg); color: var(--bg); }
-.links span { color: var(--muted); font-size: var(--s-1); }
+.links span { color: var(--muted); font-size: var(--s-1); font-variant-numeric: tabular-nums; }
 .links a:hover span { color: inherit; }
 .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-block: 28px 40px; color: var(--muted); font-size: var(--s-1); border-top: 1px solid var(--line); }
 
@@ -331,27 +409,34 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   html:not(.motion) *, html:not(.motion) *::before, html:not(.motion) *::after { animation: none !important; transition: none !important; }
 }
 .motion { scroll-behavior: smooth; }
-.motion-toggle { font: inherit; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color .3s; }
-.motion-toggle:hover { color: var(--fg); }
 </style>
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <!-- pointed (drop) arch, in the element's own 0–1 box; the arch box is 2:3 -->
-    <clipPath id="arch" clipPathUnits="objectBoundingBox">
-      <path d="M0,1 L0,0.394 A0.6,0.4 0 0 1 0.5,0 A0.6,0.4 0 0 1 1,0.394 L1,1 Z"/>
-    </clipPath>
-    <symbol id="arch-mark" viewBox="0 0 20 30"><path d="M1 30V12A11 11 0 0 1 10 1a11 11 0 0 1 9 11v18" fill="none" stroke="currentColor" stroke-width="1.4" vector-effect="non-scaling-stroke"/></symbol>
+    <symbol id="ap" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-width="1.3" vector-effect="non-scaling-stroke" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10.5"/>
+        <path d="M12 6.8L22.47 12.84M16.5 9.4L16.5 21.49M16.5 14.6L6.04 20.64M12 17.2L1.53 11.16M7.5 14.6L7.5 2.51M7.5 9.4L17.96 3.36"/>
+      </g>
+    </symbol>
   </defs>
 </svg>
 
-<header class="hero-pin" id="top" data-tone="light">
+<header class="hero-pin" id="top" data-tone="dark">
   <div class="hero-stage">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="thirds"></div>
+      <span class="reg" style="left:33.333%;top:33.333%"></span><span class="reg" style="left:66.666%;top:33.333%"></span>
+      <span class="reg" style="left:33.333%;top:66.666%"></span><span class="reg" style="left:66.666%;top:66.666%"></span>
+      <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
+      <div class="filmedge left"></div>
+      <div class="filmedge right"><div class="filmedge-track">▸ 01&#8195;01A&#8195;▸ 02&#8195;02A&#8195;▸ 03&#8195;03A&#8195;▸ 04&#8195;04A&#8195;▸ 05&#8195;05A&#8195;▸ 06&#8195;06A&#8195;KHOI NGO&#8195;▸ 07&#8195;07A&#8195;▸ 08&#8195;08A&#8195;▸ 09&#8195;09A&#8195;▸ 10&#8195;10A&#8195;▸ 11&#8195;11A&#8195;▸ 12&#8195;12A&#8195;KHOI NGO&#8195;▸ 13&#8195;13A&#8195;▸ 14&#8195;14A&#8195;▸ 15&#8195;15A&#8195;▸ 16&#8195;16A&#8195;▸ 17&#8195;17A&#8195;▸ 18&#8195;18A&#8195;KHOI NGO&#8195;▸ 19&#8195;19A&#8195;▸ 20&#8195;20A&#8195;▸ 21&#8195;21A&#8195;▸ 22&#8195;22A&#8195;▸ 23&#8195;23A&#8195;▸ 24&#8195;24A&#8195;KHOI NGO&#8195;▸ 01&#8195;01A&#8195;▸ 02&#8195;02A&#8195;▸ 03&#8195;03A&#8195;▸ 04&#8195;04A&#8195;▸ 05&#8195;05A&#8195;▸ 06&#8195;06A&#8195;KHOI NGO&#8195;▸ 07&#8195;07A&#8195;▸ 08&#8195;08A&#8195;▸ 09&#8195;09A&#8195;▸ 10&#8195;10A&#8195;▸ 11&#8195;11A&#8195;▸ 12&#8195;12A&#8195;KHOI NGO&#8195;▸ 13&#8195;13A&#8195;▸ 14&#8195;14A&#8195;▸ 15&#8195;15A&#8195;▸ 16&#8195;16A&#8195;▸ 17&#8195;17A&#8195;▸ 18&#8195;18A&#8195;KHOI NGO&#8195;▸ 19&#8195;19A&#8195;▸ 20&#8195;20A&#8195;▸ 21&#8195;21A&#8195;▸ 22&#8195;22A&#8195;▸ 23&#8195;23A&#8195;▸ 24&#8195;24A&#8195;KHOI NGO</div></div>
+    </div>
     <div class="wrap">
       <div class="bar">
-        <a class="bar-name" href="#top"><svg class="glyph" viewBox="0 0 20 30" aria-hidden="true"><use href="#arch-mark"/></svg>Khoi Ngo</a>
+        <a class="bar-name" href="#top"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><use href="#ap"/></svg>Khoi Ngo</a>
         <nav aria-label="Sections">
           <a href="#work">Work</a>
           <a href="#about">About</a>
@@ -360,14 +445,30 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
         </nav>
       </div>
       <div class="hero">
-        <h1 class="sr-only">Khoi Ngo, portrait photographer in Sydney</h1>
-        <span class="hero-word w1" aria-hidden="true"><span>Khoi</span></span>
-        <div class="arch">
-          <img src="images/aodai-1-s.jpg" srcset="images/aodai-1-s.jpg 900w, images/aodai-1-l.jpg 2000w" sizes="100vw" width="1502" height="2000" alt="Woman in a champagne áo dài leaning on a sandstone ledge under an arch, the Quadrangle clock tower behind" fetchpriority="high" decoding="async">
+        <h1 class="sr-only">Khoi Ngo, photographer and videographer in Sydney</h1>
+        <div class="hero-name" aria-hidden="true">
+          <span class="hero-word w1"><span>Khoi</span></span>
+          <span class="hero-word w2"><span>Ngo</span></span>
         </div>
-        <span class="hero-word w2" aria-hidden="true"><span>Ngo</span></span>
-        <p class="hero-line">Portrait photographer in Sydney.</p>
-        <p class="hero-more">I shoot graduations, áo dài and editorial concepts, mostly on sandstone and by the water. <a href="#contact">Book a shoot</a></p>
+        <div class="shot-slot">
+          <div class="shot">
+            <img class="shot-img" src="images/khoi-s.jpg" srcset="images/khoi-s.jpg 900w, images/khoi-l.jpg 2000w" sizes="100vw" width="1500" height="2000" alt="Khoi Ngo with his camera beside a portable light, under a tree in blossom" fetchpriority="high" decoding="async">
+            <div class="hud-layer">
+              <div class="hud" aria-hidden="true">
+                <span class="hud-c tl"></span><span class="hud-c tr"></span><span class="hud-c bl"></span><span class="hud-c br"></span>
+                <span class="hud-af"></span>
+                <div class="hud-row"><span>01</span><span class="hud-scale"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span>Sydney</span></div>
+              </div>
+            </div>
+            <div class="shutter" aria-hidden="true"></div>
+          </div>
+          <div class="float float-a" data-object="camera" aria-hidden="true"></div>
+          <div class="float float-b" data-object="film" aria-hidden="true"></div>
+        </div>
+        <div class="hero-copy">
+          <p class="hero-line">Photographer and videographer in Sydney.</p>
+          <p class="hero-more">Portraits, graduations, áo dài and editorial shoots, on digital and film. <a href="#contact">Book a shoot</a></p>
+        </div>
       </div>
     </div>
     <p class="hero-cue" aria-hidden="true">Scroll</p>
@@ -379,7 +480,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
       <div class="panel slide shift" data-tone="dark" aria-hidden="true">
         <div class="wrap shift-row">
           <span class="shift-line"></span>
-          <div class="shift-stage" data-object="camera"></div>
+          <div class="shift-stage" data-object="light"></div>
           <span class="shift-line"></span>
         </div>
       </div>
@@ -389,19 +490,20 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
     <div class="wrap section">
       <div class="ticker" aria-hidden="true">
         <div class="ticker-track">
-          <span>Graduations</span><svg class="glyph" viewBox="0 0 20 30"><use href="#arch-mark"/></svg>
-          <span>Áo dài</span><svg class="glyph" viewBox="0 0 20 30"><use href="#arch-mark"/></svg>
-          <span>Editorial</span><svg class="glyph" viewBox="0 0 20 30"><use href="#arch-mark"/></svg>
-          <span>Portraits</span><svg class="glyph" viewBox="0 0 20 30"><use href="#arch-mark"/></svg>
-          <span>Graduations</span><svg class="glyph" viewBox="0 0 20 30"><use href="#arch-mark"/></svg>
-          <span>Áo dài</span><svg class="glyph" viewBox="0 0 20 30"><use href="#arch-mark"/></svg>
-          <span>Editorial</span><svg class="glyph" viewBox="0 0 20 30"><use href="#arch-mark"/></svg>
-          <span>Portraits</span>
+          <span>Graduations</span><svg class="glyph" viewBox="0 0 24 24"><use href="#ap"/></svg>
+          <span>Áo dài</span><svg class="glyph" viewBox="0 0 24 24"><use href="#ap"/></svg>
+          <span>Editorial</span><svg class="glyph" viewBox="0 0 24 24"><use href="#ap"/></svg>
+          <span>Film</span><svg class="glyph" viewBox="0 0 24 24"><use href="#ap"/></svg>
+          <span>Portraits</span><svg class="glyph" viewBox="0 0 24 24"><use href="#ap"/></svg>
+          <span>Graduations</span><svg class="glyph" viewBox="0 0 24 24"><use href="#ap"/></svg>
+          <span>Áo dài</span><svg class="glyph" viewBox="0 0 24 24"><use href="#ap"/></svg>
+          <span>Editorial</span><svg class="glyph" viewBox="0 0 24 24"><use href="#ap"/></svg>
+          <span>Film</span>
         </div>
       </div>
       <div class="section-head">
         <h2 class="section-title" id="work-title">Work</h2>
-        <p class="section-sub">Eight shoots, 38 photographs</p>
+        <p class="section-sub">Eight shoots, 37 photographs</p>
       </div>
       <ul class="index">
         <li>
@@ -449,7 +551,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
             <img class="idx-thumb" src="images/waterfront-1-s.jpg" width="1500" height="2000" alt="" loading="lazy" decoding="async">
             <span class="idx-title">Waterfront</span>
             <span class="idx-where">Sydney</span>
-            <span class="idx-count">5 photos</span>
+            <span class="idx-count">4 photos</span>
           </a>
         </li>
         <li>
@@ -588,7 +690,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
       <div class="panel slide shift" data-tone="dark" aria-hidden="true">
         <div class="wrap shift-row">
           <span class="shift-line"></span>
-          <div class="shift-stage" data-object="film"></div>
+          <div class="shift-stage" data-object="lens"></div>
           <span class="shift-line"></span>
         </div>
       </div>
@@ -688,32 +790,27 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
             <h3 class="chapter-title" id="waterfront-title">Waterfront</h3>
             <p class="chapter-where">Sydney</p>
             <p class="chapter-note">Bright sun, sandstone blocks and the water behind.</p>
-            <p class="chapter-count">5 photos</p>
+            <p class="chapter-count">4 photos</p>
           </div>
           <div class="frames">
           <figure class="frame" style="--ar:0.75;--d:0ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-1-l.jpg" aria-label="View larger: Waterfront, photo 1 of 5">
+            <button type="button" class="frame-btn" data-full="images/waterfront-1-l.jpg" aria-label="View larger: Waterfront, photo 1 of 4">
               <img src="images/waterfront-1-s.jpg" srcset="images/waterfront-1-s.jpg 900w, images/waterfront-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in a black top sitting on harbour rocks, holding a small green camera" loading="lazy" decoding="async">
             </button>
           </figure>
-          <figure class="frame" style="--ar:1.5004;--d:80ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-2-l.jpg" aria-label="View larger: Waterfront, photo 2 of 5">
-              <img src="images/waterfront-2-s.jpg" srcset="images/waterfront-2-s.jpg 900w, images/waterfront-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman standing on sandstone blocks by the water, apartment towers across the bay" loading="lazy" decoding="async">
+          <figure class="frame" style="--ar:0.75;--d:80ms">
+            <button type="button" class="frame-btn" data-full="images/waterfront-2-l.jpg" aria-label="View larger: Waterfront, photo 2 of 4">
+              <img src="images/waterfront-2-s.jpg" srcset="images/waterfront-2-s.jpg 900w, images/waterfront-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Two frames by the water: standing on sandstone blocks with apartment towers across the bay, and holding a small green camera up beside her face" loading="lazy" decoding="async">
             </button>
           </figure>
           <figure class="frame" style="--ar:0.75;--d:160ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-3-l.jpg" aria-label="View larger: Waterfront, photo 3 of 5">
+            <button type="button" class="frame-btn" data-full="images/waterfront-3-l.jpg" aria-label="View larger: Waterfront, photo 3 of 4">
               <img src="images/waterfront-3-s.jpg" srcset="images/waterfront-3-s.jpg 900w, images/waterfront-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman at the edge of the frame, arm raised behind her head, the harbour behind" loading="lazy" decoding="async">
             </button>
           </figure>
-          <figure class="frame" style="--ar:1.5004;--d:240ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-4-l.jpg" aria-label="View larger: Waterfront, photo 4 of 5">
-              <img src="images/waterfront-4-s.jpg" srcset="images/waterfront-4-s.jpg 900w, images/waterfront-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman holding a small green camera up beside her face by the water" loading="lazy" decoding="async">
-            </button>
-          </figure>
-          <figure class="frame" style="--ar:0.75;--d:0ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-5-l.jpg" aria-label="View larger: Waterfront, photo 5 of 5">
-              <img src="images/waterfront-5-s.jpg" srcset="images/waterfront-5-s.jpg 900w, images/waterfront-5-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman sitting on a sandstone ledge, the harbour and a bridge behind" loading="lazy" decoding="async">
+          <figure class="frame" style="--ar:0.75;--d:240ms">
+            <button type="button" class="frame-btn" data-full="images/waterfront-4-l.jpg" aria-label="View larger: Waterfront, photo 4 of 4">
+              <img src="images/waterfront-4-s.jpg" srcset="images/waterfront-4-s.jpg 900w, images/waterfront-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman sitting on a sandstone ledge, the harbour and a bridge behind" loading="lazy" decoding="async">
             </button>
           </figure>
           </div>
@@ -787,7 +884,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
       <div class="panel slide shift" data-tone="dark" aria-hidden="true">
         <div class="wrap shift-row">
           <span class="shift-line"></span>
-          <div class="shift-stage" data-object="lens"></div>
+          <div class="shift-stage" data-object="strip"></div>
           <span class="shift-line"></span>
         </div>
       </div>
@@ -802,7 +899,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
         <div class="about-text">
           <p>I’m Khoi Ngo, also known as Harry. I grew up in Vietnam and moved to Sydney to study Commerce at the University of Sydney, majoring in Digital Marketing and HR.</p>
           <p>I started behind the camera on school media teams at Newton Grammar School, making photos, videos and livestreams for the school broadcasting page and the debate club, and leading media for the Fercaline rescue-pet project.</p>
-          <p>In Sydney I make content for the Vietnamese student community with SVAU and work as a marketing and social media intern. Most of my own work is portraits: graduates on campus, friends in áo dài, and concept shoots around the city.</p>
+          <p>In Sydney I make content for the Vietnamese student community with SVAU and work as a marketing and social media intern. Most of my own work is portraits: graduates on campus, friends in áo dài, and concept shoots around the city, on digital and on film, plus video for different projects.</p>
         </div>
         <div class="facts">
           <div>
@@ -811,7 +908,8 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
               <li>Graduation portraits</li>
               <li>Áo dài and cultural portraits</li>
               <li>Editorial and concept shoots</li>
-              <li>Lifestyle and outdoor portraits</li>
+              <li>Film photography</li>
+              <li>Video for projects</li>
             </ul>
           </div>
           <div>
@@ -855,7 +953,9 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
         <button type="button" class="copy" id="copy-mail" data-copy="ngonhukhoi@gmail.com">Copy email</button>
       </div>
       <ul class="links">
+        <li><a href="tel:+61410921302">Phone<span>+61 410 921 302</span></a></li>
         <li><a href="https://www.instagram.com/khoi_ngo_/" target="_blank" rel="noopener">Instagram<span>@khoi_ngo_</span></a></li>
+        <li><a href="https://www.instagram.com/koi_fisheye/" target="_blank" rel="noopener">Instagram<span>@koi_fisheye</span></a></li>
         <li><a href="https://www.tiktok.com/@like_nhu_khoi" target="_blank" rel="noopener">TikTok<span>@like_nhu_khoi</span></a></li>
         <li><a href="https://www.linkedin.com/in/ngo-nhu-khoi-963633215/" target="_blank" rel="noopener">LinkedIn<span>Nhu Khoi Ngo</span></a></li>
       </ul>
@@ -940,38 +1040,45 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   const boxes = Array.from(document.querySelectorAll('.frames:not(.frames--single)'));
   boxes.forEach(justify);
 
-  /* ---------- slides: hero zooms through the arch, then each slide rides over the one before ---------- */
-  const pin = document.querySelector('.hero-pin');
+  /* ---------- slides: the portrait grows to full screen, then each slide rides over the one before ---------- */
   const heroStage = document.querySelector('.hero-stage');
-  const arch = document.querySelector('.arch');
+  const slot = document.querySelector('.shot-slot');
+  const shot = document.querySelector('.shot');
+  const hudLayer = document.querySelector('.hud-layer');
+  const af = document.querySelector('.hud-af');
   const w1 = document.querySelector('.w1'), w2 = document.querySelector('.w2');
-  const heroText = Array.from(document.querySelectorAll('.hero-line, .hero-more, .bar, .hero-cue'));
+  const floatA = document.querySelector('.float-a'), floatB = document.querySelector('.float-b');
+  const fades = Array.from(document.querySelectorAll('.hero-copy, .bar, .hero-cue, .filmedge, .reg'));
+  const filmTrack = document.querySelector('.filmedge-track');
+  const filmEdges = Array.from(document.querySelectorAll('.filmedge'));
   const slides = Array.from(document.querySelectorAll('main > .panel'));
   const stack = [heroStage].concat(slides);
   const bands = Array.from(document.querySelectorAll('.shift'));
   const track = document.querySelector('.ticker-track');
-  let W = 0, H = 0, zoomEnd = 6, origin = { x: 0, y: 0 }, pinned = false;
+  let W = 0, H = 0, box = { x: 0, y: 0, w: 1, h: 1 }, pinned = false, zoom = 0;
   let natural = [], stuckTop = [];   // each slide's place in the page before sticking, and where it sticks
+  const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
+  window.__knPointer = tilt;
 
   if (!calm) {
     root.classList.add('motion');
-    // the load fade on the hero text would override scroll fades, so drop it once it has played
-    heroText.forEach(el => el.addEventListener('animationend', () => { el.style.animation = 'none'; el.style.opacity = '1'; }, { once: true }));
+    // load fades would override the scroll fades, so drop each once it has played
+    fades.concat([floatA, floatB]).forEach(el => el && el.addEventListener('animationend', e => {
+      if (e.target !== el) return;
+      el.style.animation = 'none'; el.style.opacity = '1';
+    }));
   }
 
   function measure() {
     W = root.clientWidth; H = window.innerHeight;
     if (calm) return;
-    // pin the hero only when its content fits the screen
     root.classList.remove('no-pin');
-    arch.style.transform = '';
     heroStage.style.transform = '';
+    ['left', 'top', 'width', 'height'].forEach(k => { shot.style[k] = ''; });
     pinned = heroStage.scrollHeight <= heroStage.clientHeight + 2;
     root.classList.toggle('no-pin', !pinned);
-    const s = heroStage.getBoundingClientRect(), a = arch.getBoundingClientRect();
-    origin = { x: a.left - s.left + a.width * 0.5, y: a.top - s.top + a.height * 0.46 };
-    zoomEnd = Math.max(W / a.width, H / (a.height * 0.5)) * 1.18;
-    // a slide sticks once its bottom meets the bottom of the screen, so tall slides can be read in full
+    const s = heroStage.getBoundingClientRect(), r = slot.getBoundingClientRect();
+    box = { x: r.left - s.left, y: r.top - s.top, w: r.width, h: r.height };
     const sy = window.scrollY;
     slides.forEach((el, i) => {
       const h = el.offsetHeight, top = el.classList.contains('slide') ? Math.min(0, H - h) : 0;
@@ -983,41 +1090,62 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
     heroStage.style.transformOrigin = '50% 50%';
   }
 
+  function applyTilt() {
+    const k = 1 - zoom;
+    shot.style.transform = 'perspective(1600px) rotateY(' + (tilt.x * 3 * k).toFixed(2) + 'deg) rotateX(' + (-tilt.y * 2.4 * k).toFixed(2) + 'deg)';
+    hudLayer.style.transform = 'translate3d(' + (tilt.x * 9 * k).toFixed(1) + 'px,' + (tilt.y * 9 * k).toFixed(1) + 'px,0)';
+  }
+
   function frame() {
     const y = window.scrollY;
-    if (!calm) {
-      if (pinned) {
-        const z = clamp(y / (H * 0.9), 0, 1), e = inOut(z);
-        const sc = Math.pow(zoomEnd, e);
-        arch.style.transform = 'translate3d(' + ((W / 2 - origin.x) * e).toFixed(1) + 'px,' + ((H / 2 - origin.y) * e).toFixed(1) + 'px,0) scale(' + sc.toFixed(4) + ')';
-        w1.style.transform = 'translate3d(' + (-e * W * 0.5).toFixed(1) + 'px,0,0)';
-        w2.style.transform = 'translate3d(' + (e * W * 0.5).toFixed(1) + 'px,0,0)';
-        w1.style.opacity = w2.style.opacity = clamp(1 - e * 1.3, 0, 1).toFixed(3);
-        heroText.forEach(el => { if (el.style.animation === 'none' || !el.getAnimations || !el.getAnimations().length) el.style.opacity = clamp(1 - z * 3, 0, 1).toFixed(3); });
-      }
-      // covered slide zooms out and dims as the next one rides over it; once fully covered it is hidden
-      for (let i = 0; i < stack.length - 1; i++) {
-        const cur = stack[i];
-        const nTop = Math.max(natural[i] - y, stuckTop[i]);                 // where the next slide's top edge is now
-        let top, h, stuck;
-        if (i === 0) { top = 0; h = H; stuck = pinned; }
-        else { const j = i - 1; h = slides[j].offsetHeight; top = Math.max(natural[j] - y, stuckTop[j]); stuck = natural[j] - y <= stuckTop[j]; }
-        const lo = Math.max(top, 0), hi = Math.min(top + h, H);
-        const p = stuck && hi > lo ? clamp((hi - nTop) / (hi - lo), 0, 1) : 0;
-        const k = inOut(p);
-        cur.style.transform = p > 0 ? 'scale(' + (1 - 0.1 * k).toFixed(4) + ')' : '';
-        cur.style.setProperty('--cover', (0.62 * k).toFixed(3));
-        cur.style.visibility = p >= 0.999 ? 'hidden' : '';
-      }
-      bands.forEach(b => {
-        const r = b.getBoundingClientRect();
-        b.style.setProperty('--p', clamp((H - r.top) / (H * 0.6), 0, 1).toFixed(3));
+    if (calm) return;
+    if (pinned) {
+      const z = clamp(y / (H * 0.9), 0, 1), e = inOut(z);
+      zoom = e;
+      if (e > 0) {
+        shot.style.left = (-box.x * e).toFixed(1) + 'px';
+        shot.style.top = (-box.y * e).toFixed(1) + 'px';
+        shot.style.width = (box.w + (W - box.w) * e).toFixed(1) + 'px';
+        shot.style.height = (box.h + (H - box.h) * e).toFixed(1) + 'px';
+      } else { ['left', 'top', 'width', 'height'].forEach(k => { shot.style[k] = ''; }); }
+      w1.style.transform = 'translate3d(' + (-e * W * 0.55).toFixed(1) + 'px,0,0)';
+      w2.style.transform = 'translate3d(' + (e * W * 0.55).toFixed(1) + 'px,0,0)';
+      w1.style.opacity = w2.style.opacity = clamp(1 - e * 1.4, 0, 1).toFixed(3);
+      fades.forEach(el => { if (el.style.animation === 'none' || !el.getAnimations || !el.getAnimations().length) el.style.opacity = clamp(1 - z * 3, 0, 1).toFixed(3); });
+      af.style.opacity = clamp(1 - e * 4, 0, 1).toFixed(3);
+      [[floatA, 0.42, -0.4, 0.9], [floatB, -0.42, 0.36, 0.7]].forEach(([el, dx, dy, grow]) => {
+        if (!el) return;
+        el.style.translate = (e * W * dx).toFixed(1) + 'px ' + (e * H * dy).toFixed(1) + 'px';
+        el.style.scale = (1 + e * grow).toFixed(3);
+        if (el.style.animation === 'none') el.style.opacity = clamp(1 - e * 1.5, 0, 1).toFixed(3);
       });
-      if (track) {
-        const r = track.parentElement.getBoundingClientRect();
-        const p = (H - r.top) / (H + r.height);
-        track.style.transform = 'translate3d(' + (-clamp(p, -0.2, 1.2) * 32).toFixed(2) + '%,0,0)';
-      }
+      applyTilt();
+    }
+    // the film edges advance as you scroll
+    filmEdges.forEach(f => f.style.setProperty('--film', (-y * 0.6).toFixed(1) + 'px'));
+    if (filmTrack) filmTrack.style.transform = 'translate3d(0,' + (-(y * 0.6) % (filmTrack.offsetHeight / 2 || 1)).toFixed(1) + 'px,0)';
+    // covered slide zooms out and dims as the next one rides over it; once fully covered it is hidden
+    for (let i = 0; i < stack.length - 1; i++) {
+      const cur = stack[i];
+      const nTop = Math.max(natural[i] - y, stuckTop[i]);                 // where the next slide's top edge is now
+      let top, h, stuck;
+      if (i === 0) { top = 0; h = H; stuck = pinned; }
+      else { const j = i - 1; h = slides[j].offsetHeight; top = Math.max(natural[j] - y, stuckTop[j]); stuck = natural[j] - y <= stuckTop[j]; }
+      const lo = Math.max(top, 0), hi = Math.min(top + h, H);
+      const p = stuck && hi > lo ? clamp((hi - nTop) / (hi - lo), 0, 1) : 0;
+      const k = inOut(p);
+      cur.style.transform = p > 0 ? 'scale(' + (1 - 0.1 * k).toFixed(4) + ')' : '';
+      cur.style.setProperty('--cover', (0.62 * k).toFixed(3));
+      cur.style.visibility = p >= 0.999 ? 'hidden' : '';
+    }
+    bands.forEach(b => {
+      const r = b.getBoundingClientRect();
+      b.style.setProperty('--p', clamp((H - r.top) / (H * 0.6), 0, 1).toFixed(3));
+    });
+    if (track) {
+      const r = track.parentElement.getBoundingClientRect();
+      const p = (H - r.top) / (H + r.height);
+      track.style.transform = 'translate3d(' + (-clamp(p, -0.2, 1.2) * 32).toFixed(2) + '%,0,0)';
     }
   }
   let queued = false;
@@ -1034,6 +1162,20 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); frame(); });
   window.addEventListener('load', () => { measure(); frame(); });
+
+  /* the portrait tilts toward the pointer, like turning a print in the hand */
+  if (!calm && window.matchMedia('(pointer: fine)').matches) {
+    let easing = false;
+    const step = () => {
+      tilt.x += (tilt.tx - tilt.x) * 0.08; tilt.y += (tilt.ty - tilt.y) * 0.08;
+      applyTilt();
+      if (Math.abs(tilt.tx - tilt.x) + Math.abs(tilt.ty - tilt.y) > 0.002) requestAnimationFrame(step); else easing = false;
+    };
+    window.addEventListener('pointermove', e => {
+      tilt.tx = clamp(e.clientX / W * 2 - 1, -1, 1); tilt.ty = clamp(e.clientY / H * 2 - 1, -1, 1);
+      if (!easing) { easing = true; requestAnimationFrame(step); }
+    }, { passive: true });
+  }
 
   /* ---------- scroll reveals ---------- */
   if (!calm && 'IntersectionObserver' in window) {
@@ -1161,9 +1303,9 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 </script>
 
 <script>
-/* ---------- 3D objects in the transition slides (three.js, loaded when the first one is near) ---------- */
+/* ---------- 3D objects: around the portrait and on the transition slides (three.js, loaded on demand) ---------- */
 (() => {
-  const stages = Array.from(document.querySelectorAll('.shift-stage'));
+  const stages = Array.from(document.querySelectorAll('[data-object]'));
   if (!stages.length || !('IntersectionObserver' in window)) return;
   const calm = !document.documentElement.classList.contains('motion');
   let begun = false;
@@ -1196,11 +1338,12 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
     const key = new T.DirectionalLight(0xffffff, 0.9); key.position.set(1.2, 1.7, 2.2); scene.add(key);
     const rim = new T.DirectionalLight(0xffffff, 0.7); rim.position.set(-2.2, 1.1, -1.4); scene.add(rim);
 
-    /* white objects with black details, set on the black transition slides */
+    /* white objects with black details, set on black slides */
     const base = new T.MeshStandardMaterial({ color: new T.Color('#E9E9E7'), roughness: 0.55, metalness: 0.04 });
     const accent = new T.MeshStandardMaterial({ color: new T.Color('#141414'), roughness: 0.42, metalness: 0.04 });
     const glass = new T.MeshStandardMaterial({ color: 0x050505, roughness: 0.1, metalness: 0.75 });
     const paper = new T.MeshStandardMaterial({ color: 0xf3f3f1, roughness: 0.85 });
+    const glow = new T.MeshBasicMaterial({ color: 0xffffff });
 
     function rrect(w, h, r) {
       const s = new T.Shape(), x = -w / 2, y = -h / 2;
@@ -1216,8 +1359,34 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
       return new T.Mesh(g, mat);
     }
     function cyl(r, h, mat, seg) { return new T.Mesh(new T.CylinderGeometry(r, r, h, seg || 48), mat); }
-    function at(mesh, x, y, z, rx) { mesh.position.set(x, y, z); if (rx) mesh.rotation.x = rx; return mesh; }
+    function at(mesh, x, y, z, rx, rz) { mesh.position.set(x, y, z); if (rx) mesh.rotation.x = rx; if (rz) mesh.rotation.z = rz; return mesh; }
     const Q = Math.PI / 2;
+
+    function greyCanvas(src, aspect, h) {
+      return new Promise(resolve => {
+        const im = new Image();
+        im.onload = () => {
+          const w = Math.round(h * aspect);
+          const c = document.createElement('canvas'); c.width = w; c.height = h;
+          const x = c.getContext('2d');
+          const ia = im.naturalWidth / im.naturalHeight;
+          let sw = im.naturalWidth, sh = im.naturalHeight, sx = 0, sy = 0;
+          if (ia > aspect) { sw = sh * aspect; sx = (im.naturalWidth - sw) / 2; } else { sh = sw / aspect; sy = (im.naturalHeight - sh) / 2; }
+          x.drawImage(im, sx, sy, sw, sh, 0, 0, w, h);
+          try {
+            const d = x.getImageData(0, 0, w, h), p = d.data;
+            for (let i = 0; i < p.length; i += 4) {
+              const l = 0.2126 * p[i] + 0.7152 * p[i + 1] + 0.0722 * p[i + 2];
+              p[i] = p[i + 1] = p[i + 2] = Math.min(255, Math.max(0, (l - 128) * 1.12 + 128));
+            }
+            x.putImageData(d, 0, 0);
+          } catch (e) { /* keep colour if pixels can't be read */ }
+          resolve(c);
+        };
+        im.onerror = () => resolve(null);
+        im.src = src;
+      });
+    }
 
     function camera() {
       const g = new T.Group();
@@ -1251,39 +1420,54 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
       const pts = [[0, 0], [0.5, 0], [0.5, 0.08], [0.62, 0.08], [0.62, 0.5], [0.58, 0.5], [0.58, 0.62], [0.66, 0.62],
                    [0.66, 1.02], [0.6, 1.02], [0.6, 1.18], [0.52, 1.2], [0, 1.2]].map(p => new T.Vector2(p[0], p[1]));
       g.add(at(new T.Mesh(new T.LatheGeometry(pts, 72), base), 0, -0.6, 0));
-      for (let i = 0; i < 5; i++) {
-        const rib = new T.Mesh(new T.TorusGeometry(0.665, 0.02, 8, 72), accent);
-        g.add(at(rib, 0, 0.1 + i * 0.075, 0, Q));                              // focus grip
-      }
+      for (let i = 0; i < 5; i++) g.add(at(new T.Mesh(new T.TorusGeometry(0.665, 0.02, 8, 72), accent), 0, 0.1 + i * 0.075, 0, Q)); // focus grip
       g.add(at(cyl(0.63, 0.06, accent, 72), 0, -0.3, 0));                     // aperture band
       g.add(at(cyl(0.46, 0.02, glass, 72), 0, 0.605, 0));                     // front glass
       g.rotation.x = 1.15;                                                     // glass tipped toward the viewer
       return g;
     }
-    function greyTexture(src, aspect) {
-      return new Promise(resolve => {
-        const im = new Image();
-        im.onload = () => {
-          const h = 384, w = Math.round(h * aspect);
-          const c = document.createElement('canvas'); c.width = w; c.height = h;
-          const x = c.getContext('2d');
-          const ia = im.naturalWidth / im.naturalHeight;
-          let sw = im.naturalWidth, sh = im.naturalHeight, sx = 0, sy = 0;
-          if (ia > aspect) { sw = sh * aspect; sx = (im.naturalWidth - sw) / 2; } else { sh = sw / aspect; sy = (im.naturalHeight - sh) / 2; }
-          x.drawImage(im, sx, sy, sw, sh, 0, 0, w, h);
-          try {
-            const d = x.getImageData(0, 0, w, h), p = d.data;
-            for (let i = 0; i < p.length; i += 4) {
-              const l = 0.2126 * p[i] + 0.7152 * p[i + 1] + 0.0722 * p[i + 2];
-              p[i] = p[i + 1] = p[i + 2] = Math.min(255, Math.max(0, (l - 128) * 1.12 + 128));
-            }
-            x.putImageData(d, 0, 0);
-          } catch (e) { /* keep colour if pixels can't be read */ }
-          const t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; t.anisotropy = 4;
-          resolve(t);
-        };
-        im.src = src;
+    function light() {
+      // a portable light on a stand, like the one in the portrait
+      const g = new T.Group();
+      g.add(at(cyl(0.035, 1.9, accent, 16), 0, -1.05, 0));                    // pole
+      for (let k = 0; k < 3; k++) {                                            // tripod legs
+        const leg = new T.Group(); leg.rotation.y = k * 2.094;
+        leg.add(at(cyl(0.028, 0.85, accent, 12), 0.3, -2.3, 0, 0, 0.785));
+        g.add(leg);
+      }
+      g.add(at(slab(0.18, 0.22, 0.18, 0.04, accent), 0, -0.04, -0.1));        // mount
+      g.add(at(slab(0.92, 0.8, 0.88, 0.12, base), 0, 0.42, -0.1));            // head
+      g.add(at(slab(0.02, 0.56, 0.6, 0.01, accent), 0.47, 0.42, -0.1));       // side panel
+      const bowl = new T.LatheGeometry([[0.2, 0], [0.24, 0.04], [0.44, 0.3], [0.52, 0.44], [0.54, 0.46]].map(p => new T.Vector2(p[0], p[1])), 64);
+      const refl = new T.Mesh(bowl, new T.MeshStandardMaterial({ color: 0xdedede, roughness: 0.3, metalness: 0.5, side: T.DoubleSide }));
+      g.add(at(refl, 0, 0.42, 0.34, Q));                                      // reflector opening toward the viewer
+      g.add(at(cyl(0.21, 0.04, glow, 48), 0, 0.42, 0.36, Q));                 // lit emitter
+      return g;
+    }
+    function strip() {
+      // a curved strip of black-and-white negatives with three of Khoi's frames
+      const c = document.createElement('canvas'); c.width = 1536; c.height = 384;
+      const x = c.getContext('2d');
+      x.fillStyle = '#111'; x.fillRect(0, 0, c.width, c.height);
+      x.fillStyle = '#e9e9e7';
+      const hole = (hx, hy) => { x.beginPath(); x.roundRect ? x.roundRect(hx, hy, 15, 21, 3) : x.rect(hx, hy, 15, 21); x.fill(); };
+      for (let i = 0; i < 48; i++) { hole(9 + i * 32, 13); hole(9 + i * 32, c.height - 34); }
+      x.font = '500 13px sans-serif'; x.fillStyle = '#9a9a9a';
+      ['12', '12A', '13', '13A', '14', '14A'].forEach((t, i) => x.fillText('▸ ' + t, 92 + i * 236, 52));
+      const tex = new T.CanvasTexture(c); tex.encoding = T.sRGBEncoding; tex.anisotropy = 4;
+      const frameW = 420, frameH = 268, gap = 44, y0 = 70, x0 = (c.width - (frameW * 3 + gap * 2)) / 2;
+      ['gothic-1', 'carpark-3', 'gothic-3'].forEach((name, i) => {
+        greyCanvas('images/' + name + '-s.jpg', frameW / frameH, frameH).then(g => {
+          if (!g) return;
+          x.drawImage(g, x0 + i * (frameW + gap), y0, frameW, frameH);
+          tex.needsUpdate = true;
+        });
       });
+      const arc = 1.5, r = 2.2, hgt = (arc * r) / 4;
+      const mesh = new T.Mesh(new T.CylinderGeometry(r, r, hgt, 80, 1, true, -arc / 2, arc),
+        new T.MeshStandardMaterial({ map: tex, side: T.DoubleSide, roughness: 0.45, metalness: 0.1 }));
+      const g = new T.Group(); g.add(mesh);
+      return g;
     }
     function prints() {
       const g = new T.Group();
@@ -1294,17 +1478,22 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
         p.add(new T.Mesh(new T.BoxGeometry(1.3, 1.6, 0.014), paper));
         const mat = new T.MeshBasicMaterial({ color: 0x8a8a8a });
         p.add(at(new T.Mesh(new T.PlaneGeometry(1.14, 1.22), mat), 0, 0.11, 0.0085));
-        greyTexture('images/' + name + '-s.jpg', 1.14 / 1.22).then(t => { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; });
+        greyCanvas('images/' + name + '-s.jpg', 1.14 / 1.22, 384).then(cv => {
+          if (!cv) return;
+          const t = new T.CanvasTexture(cv); t.encoding = T.sRGBEncoding; t.anisotropy = 4;
+          mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true;
+        });
         p.position.set(fan[i][0], fan[i][1], i * 0.05);
         p.rotation.z = fan[i][2];
         g.add(p);
       });
       return g;
     }
-    const BUILD = { camera, film, lens, prints };
-    const SPIN = { camera: 2.6, film: 2.8, lens: 2.2, prints: 1.1 };
+    const BUILD = { camera, film, lens, light, strip, prints };
+    const SPIN = { camera: 2.6, film: 2.8, lens: 2.2, light: 1.6, strip: 0.9, prints: 1.1 };
+    const TILT = { strip: 0.12, light: 0.18 };
 
-    /* one renderer draws each object into its own canvas inside its slide, so slides above can cover it */
+    /* one renderer draws each object into its own canvas, so the slide above can cover it */
     const items = stages.map((el, i) => {
       const kind = el.dataset.object;
       const obj = (BUILD[kind] || camera)();
@@ -1317,10 +1506,13 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
       const canvas = document.createElement('canvas');
       canvas.className = 'stage-canvas';
       el.appendChild(canvas);
-      return { el, slide: el.closest('.panel'), pivot, canvas, ctx: canvas.getContext('2d'), radius: sphere.radius, spin: SPIN[kind] || 2.4, ry: 0, phase: i * 1.7 };
+      const hero = !!el.closest('.hero-stage');
+      return { el, hero, slide: el.closest('.panel'), pivot, canvas, ctx: canvas.getContext('2d'), radius: sphere.radius,
+               spin: SPIN[kind] || 2.4, tiltX: TILT[kind] !== undefined ? TILT[kind] : 0.3, ry: 0, phase: i * 1.7 };
     });
     let bufferSize = 0;
     const ease = t => 1 - Math.pow(1 - t, 3);
+    const pointer = window.__knPointer || { x: 0, y: 0 };
 
     function frame(now) {
       requestAnimationFrame(frame);
@@ -1328,18 +1520,25 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
       for (const it of items) {
         const r = it.el.getBoundingClientRect();
         if (r.bottom < 0 || r.top > H || !r.width) continue;
-        if (parseFloat(it.slide.style.getPropertyValue('--cover') || 0) > 0.6) continue;   // fully covered by the next slide
-        const px = Math.round(r.width * dpr);
+        if (it.slide && parseFloat(it.slide.style.getPropertyValue('--cover') || 0) > 0.6) continue;   // covered by the next slide
+        const px = Math.min(1024, Math.round(r.width * dpr / (parseFloat(it.el.style.scale) || 1)));
         if (it.canvas.width !== px) { it.canvas.width = px; it.canvas.height = px; }
         if (bufferSize !== px) { renderer.setSize(px, px, false); bufferSize = px; }
-        const p = (r.top + r.height / 2) / H - 0.5;               // -0.5 at the top of the screen, 0.5 at the bottom
-        const enter = Math.min(1, Math.max(0, (H - r.top) / (H * 0.5)));
+        let goal, enter;
+        if (it.hero) {
+          // around the portrait: a slow turn, pushed further by scrolling and the pointer
+          goal = calm ? 0 : now / 4200 + window.scrollY / H * 1.6 + pointer.x * 0.6;
+          enter = 1;
+        } else {
+          const p = (r.top + r.height / 2) / H - 0.5;
+          goal = calm ? 0 : -p * it.spin + pointer.x * 0.25;
+          enter = Math.min(1, Math.max(0, (H - r.top) / (H * 0.5)));
+        }
         const zoom = calm ? 1 : 0.62 + 0.38 * ease(enter);
         const R = it.radius * 1.08 / zoom;
         cam.left = -R; cam.right = R; cam.top = R; cam.bottom = -R; cam.updateProjectionMatrix();
-        const goal = calm ? 0 : -p * it.spin;
         it.ry += (goal - it.ry) * (calm ? 1 : 0.09);
-        it.pivot.rotation.set(0.3 + (calm ? 0 : p * 0.35), it.ry - 0.45, 0);
+        it.pivot.rotation.set(it.tiltX + (calm ? 0 : pointer.y * 0.25), it.ry - 0.45, 0);
         it.pivot.position.y = calm ? 0 : Math.sin(now / 1500 + it.phase) * it.radius * 0.035;
         items.forEach(o => { o.pivot.visible = o === it; });
         renderer.render(scene, cam);
