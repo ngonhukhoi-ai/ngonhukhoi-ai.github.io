@@ -109,10 +109,10 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 
 /* ---------- first slide: portrait in a viewfinder frame ---------- */
 .hero-stage { position: relative; background: var(--bg); color: var(--fg); overflow: hidden; }
-.motion .hero-pin { height: 200svh; }
-.motion .hero-stage { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; }
+.motion .hero-pin { height: 200vh; height: 200svh; }
+.motion .hero-stage { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; }
 .motion .hero-stage > .wrap { flex: 1; display: flex; flex-direction: column; width: 100%; }
-.motion .hero-pin + main > .anchor:first-child { margin-top: -100svh; }
+.motion .hero-pin + main > .anchor:first-child { margin-top: -100vh; margin-top: -100svh; }
 .no-pin .hero-pin { height: auto !important; }
 .no-pin .hero-stage { position: relative !important; height: auto !important; }
 .no-pin .hero-pin + main > .anchor:first-child { margin-top: 0 !important; }
@@ -159,7 +159,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   align-items: end;
   align-content: center;
   column-gap: clamp(28px, 4vw, 64px);
-  padding-block: 8px clamp(36px, 6svh, 72px);
+  padding-block: 8px clamp(36px, 6vh, 72px);
 }
 .hero-name { grid-area: name; justify-self: start; display: flex; flex-direction: column; position: relative; z-index: 1; }
 .hero-word {
@@ -177,7 +177,11 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 .hero-cue { position: absolute; z-index: 4; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); font-size: var(--s-1); color: var(--muted); display: none; }
 .motion .hero-cue { display: block; animation: fadeup 1s var(--ease) 2s both; }
 
-.shot-slot { grid-area: shot; position: relative; z-index: 2; height: min(74svh, 780px); aspect-ratio: 3 / 4; max-width: 100%; }
+.shot-slot {
+  grid-area: shot; position: relative; z-index: 2; max-width: 100%;
+  height: min(74vh, 780px); width: calc(min(74vh, 780px) * 0.75);
+  height: min(74svh, 780px); width: calc(min(74svh, 780px) * 0.75);
+}
 .shot { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; background: var(--well); transform-style: preserve-3d; }
 .shot-img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 46% 52%; }
 /* on opening: the frame wipes up into view, the photo settles from a gentle zoom and develops into colour */
@@ -231,7 +235,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
     row-gap: 14px;
     padding-block: 2px 52px;
   }
-  .shot-slot { justify-self: center; height: auto; width: min(100%, 420px, 40.5svh); }
+  .shot-slot { justify-self: center; width: min(100%, 420px, 40.5vh); width: min(100%, 420px, 40.5svh); height: auto; aspect-ratio: 3 / 4; }
   .hero-name { flex-direction: row; column-gap: 4.4vw; }
   .bar nav { column-gap: 14px; }
   .motion-toggle { font-size: var(--s-1); }
@@ -248,10 +252,11 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: clamp(16px, 3vw, 40px);
+  min-height: clamp(340px, 72vh, 720px);
   min-height: clamp(340px, 72svh, 720px);
   position: relative; z-index: 1;
 }
-.shift-stage { width: clamp(190px, 34svh, 320px); aspect-ratio: 1; max-width: 100%; }
+.shift-stage { width: clamp(190px, 34vh, 320px); width: clamp(190px, 34svh, 320px); height: auto; aspect-ratio: 1; max-width: 100%; }
 .shift-line {
   height: 30px; opacity: .6;
   transform: scaleX(var(--p, 1));
@@ -265,7 +270,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 
 /* ---------- section headings ---------- */
 .section { padding-block: clamp(56px, 8vw, 112px); }
-.motion .section, .motion .chapter { min-height: 100svh; }
+.motion .section, .motion .chapter { min-height: 100vh; min-height: 100svh; }
 .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: clamp(24px, 4vw, 48px); }
 .section-title { font-size: var(--s4); font-weight: 200; line-height: 1.05; letter-spacing: -0.02em; }
 .section-sub { color: var(--muted); }
@@ -404,6 +409,15 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
 .lb-nav svg { width: 28px; height: 28px; }
 @media (max-width: 699px) { .lb-nav { display: none; } }
 
+/* the portrait's opening reveal is gentle (a wipe, fade and develop), so it plays even when motion is reduced */
+.hero-stage .shot { animation: reveal 1.3s cubic-bezier(.7, 0, .2, 1) .2s both !important; }
+.hero-stage .shot-img { animation: develop 2.8s ease .7s both !important; }
+.motion .hero-stage .shot-img { animation: settle 2s var(--ease) .2s both, develop 2.8s ease .7s both !important; }
+.hero-stage .hud-layer, .hero-stage .float { animation: fadein .9s ease 1.3s both !important; }
+.hero-stage .hero-word > span, .hero-stage .hero-copy { animation: fadein 1.2s ease .6s both !important; }
+.motion .hero-stage .hero-word > span { animation: rise 1.3s var(--ease) .5s both !important; }
+.motion .hero-stage .w2 > span { animation-delay: .62s !important; }
+
 /* motion follows the device's reduce-motion setting unless the visitor picks with the switch in the top bar */
 .motion-off *, .motion-off *::before, .motion-off *::after { animation: none !important; transition: none !important; }
 @media (prefers-reduced-motion: reduce) {
@@ -503,7 +517,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
       </div>
       <div class="section-head">
         <h2 class="section-title" id="work-title">Work</h2>
-        <p class="section-sub">Eight shoots, 36 photographs</p>
+        <p class="section-sub">Eight shoots, 33 photographs</p>
       </div>
       <ul class="index">
         <li>
@@ -543,7 +557,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
             <img class="idx-thumb" src="images/harbour-1-s.jpg" width="1500" height="2000" alt="" loading="lazy" decoding="async">
             <span class="idx-title">White by the harbour</span>
             <span class="idx-where">Sydney Harbour</span>
-            <span class="idx-count">8 photos</span>
+            <span class="idx-count">4 photos</span>
           </a>
         </li>
         <li>
@@ -551,7 +565,7 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
             <img class="idx-thumb" src="images/waterfront-1-s.jpg" width="1500" height="2000" alt="" loading="lazy" decoding="async">
             <span class="idx-title">Waterfront</span>
             <span class="idx-where">Sydney</span>
-            <span class="idx-count">3 photos</span>
+            <span class="idx-count">4 photos</span>
           </a>
         </li>
         <li>
@@ -736,47 +750,27 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
             <h3 class="chapter-title" id="harbour-title">White by the harbour</h3>
             <p class="chapter-where">Sydney Harbour</p>
             <p class="chapter-note">White clothes, white flowers and late sun along the harbour foreshore.</p>
-            <p class="chapter-count">8 photos</p>
+            <p class="chapter-count">4 photos</p>
           </div>
           <div class="frames">
           <figure class="frame" style="--ar:0.75;--d:0ms">
-            <button type="button" class="frame-btn" data-full="images/harbour-1-l.jpg" aria-label="View larger: White by the harbour, photo 1 of 8">
+            <button type="button" class="frame-btn" data-full="images/harbour-1-l.jpg" aria-label="View larger: White by the harbour, photo 1 of 4">
               <img src="images/harbour-1-s.jpg" srcset="images/harbour-1-s.jpg 900w, images/harbour-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman holding white flowers by the harbour, the Opera House and Harbour Bridge behind" loading="lazy" decoding="async">
             </button>
           </figure>
-          <figure class="frame" style="--ar:1.5004;--d:80ms">
-            <button type="button" class="frame-btn" data-full="images/harbour-2-l.jpg" aria-label="View larger: White by the harbour, photo 2 of 8">
-              <img src="images/harbour-2-s.jpg" srcset="images/harbour-2-s.jpg 900w, images/harbour-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman in cream looking back over her shoulder, a sailboat moored on the harbour behind" loading="lazy" decoding="async">
+          <figure class="frame" style="--ar:0.75;--d:80ms">
+            <button type="button" class="frame-btn" data-full="images/harbour-2-l.jpg" aria-label="View larger: White by the harbour, photo 2 of 4">
+              <img src="images/harbour-2-s.jpg" srcset="images/harbour-2-s.jpg 900w, images/harbour-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman on a park bench with a small camera and white flowers" loading="lazy" decoding="async">
             </button>
           </figure>
           <figure class="frame" style="--ar:0.75;--d:160ms">
-            <button type="button" class="frame-btn" data-full="images/harbour-3-l.jpg" aria-label="View larger: White by the harbour, photo 3 of 8">
-              <img src="images/harbour-3-s.jpg" srcset="images/harbour-3-s.jpg 900w, images/harbour-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman on a park bench with a small camera and white flowers" loading="lazy" decoding="async">
+            <button type="button" class="frame-btn" data-full="images/harbour-3-l.jpg" aria-label="View larger: White by the harbour, photo 3 of 4">
+              <img src="images/harbour-3-s.jpg" srcset="images/harbour-3-s.jpg 900w, images/harbour-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in a white dress taking a selfie on the grass under a pine" loading="lazy" decoding="async">
             </button>
           </figure>
-          <figure class="frame" style="--ar:1.5004;--d:240ms">
-            <button type="button" class="frame-btn" data-full="images/harbour-4-l.jpg" aria-label="View larger: White by the harbour, photo 4 of 8">
-              <img src="images/harbour-4-s.jpg" srcset="images/harbour-4-s.jpg 900w, images/harbour-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman holding white flowers on a sunlit lawn among tall trees" loading="lazy" decoding="async">
-            </button>
-          </figure>
-          <figure class="frame" style="--ar:0.75;--d:0ms">
-            <button type="button" class="frame-btn" data-full="images/harbour-5-l.jpg" aria-label="View larger: White by the harbour, photo 5 of 8">
-              <img src="images/harbour-5-s.jpg" srcset="images/harbour-5-s.jpg 900w, images/harbour-5-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in a white dress taking a selfie on the grass under a pine" loading="lazy" decoding="async">
-            </button>
-          </figure>
-          <figure class="frame" style="--ar:1.5004;--d:80ms">
-            <button type="button" class="frame-btn" data-full="images/harbour-6-l.jpg" aria-label="View larger: White by the harbour, photo 6 of 8">
-              <img src="images/harbour-6-s.jpg" srcset="images/harbour-6-s.jpg 900w, images/harbour-6-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Sun low over the harbour, the Opera House and Harbour Bridge in the distance" loading="lazy" decoding="async">
-            </button>
-          </figure>
-          <figure class="frame" style="--ar:0.75;--d:160ms">
-            <button type="button" class="frame-btn" data-full="images/harbour-7-l.jpg" aria-label="View larger: White by the harbour, photo 7 of 8">
-              <img src="images/harbour-7-s.jpg" srcset="images/harbour-7-s.jpg 900w, images/harbour-7-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in pale blue beside a vine-covered stone pillar" loading="lazy" decoding="async">
-            </button>
-          </figure>
-          <figure class="frame" style="--ar:1.5004;--d:240ms">
-            <button type="button" class="frame-btn" data-full="images/harbour-8-l.jpg" aria-label="View larger: White by the harbour, photo 8 of 8">
-              <img src="images/harbour-8-s.jpg" srcset="images/harbour-8-s.jpg 900w, images/harbour-8-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="2000" height="1333" alt="Woman in white sitting on the lawn holding a small camera, long shadows across the grass" loading="lazy" decoding="async">
+          <figure class="frame" style="--ar:0.75;--d:240ms">
+            <button type="button" class="frame-btn" data-full="images/harbour-4-l.jpg" aria-label="View larger: White by the harbour, photo 4 of 4">
+              <img src="images/harbour-4-s.jpg" srcset="images/harbour-4-s.jpg 900w, images/harbour-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in pale blue beside a vine-covered stone pillar" loading="lazy" decoding="async">
             </button>
           </figure>
           </div>
@@ -790,22 +784,27 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
             <h3 class="chapter-title" id="waterfront-title">Waterfront</h3>
             <p class="chapter-where">Sydney</p>
             <p class="chapter-note">Bright sun, sandstone blocks and the water behind.</p>
-            <p class="chapter-count">3 photos</p>
+            <p class="chapter-count">4 photos</p>
           </div>
           <div class="frames">
           <figure class="frame" style="--ar:0.75;--d:0ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-1-l.jpg" aria-label="View larger: Waterfront, photo 1 of 3">
+            <button type="button" class="frame-btn" data-full="images/waterfront-1-l.jpg" aria-label="View larger: Waterfront, photo 1 of 4">
               <img src="images/waterfront-1-s.jpg" srcset="images/waterfront-1-s.jpg 900w, images/waterfront-1-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman in a black top sitting on harbour rocks, holding a small green camera" loading="lazy" decoding="async">
             </button>
           </figure>
           <figure class="frame" style="--ar:0.75;--d:80ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-2-l.jpg" aria-label="View larger: Waterfront, photo 2 of 3">
-              <img src="images/waterfront-2-s.jpg" srcset="images/waterfront-2-s.jpg 900w, images/waterfront-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman at the edge of the frame, arm raised behind her head, the harbour behind" loading="lazy" decoding="async">
+            <button type="button" class="frame-btn" data-full="images/waterfront-2-l.jpg" aria-label="View larger: Waterfront, photo 2 of 4">
+              <img src="images/waterfront-2-s.jpg" srcset="images/waterfront-2-s.jpg 900w, images/waterfront-2-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Two frames by the water: standing on sandstone blocks with apartment towers across the bay, and holding a small green camera up beside her face" loading="lazy" decoding="async">
             </button>
           </figure>
           <figure class="frame" style="--ar:0.75;--d:160ms">
-            <button type="button" class="frame-btn" data-full="images/waterfront-3-l.jpg" aria-label="View larger: Waterfront, photo 3 of 3">
-              <img src="images/waterfront-3-s.jpg" srcset="images/waterfront-3-s.jpg 900w, images/waterfront-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman sitting on a sandstone ledge, the harbour and a bridge behind" loading="lazy" decoding="async">
+            <button type="button" class="frame-btn" data-full="images/waterfront-3-l.jpg" aria-label="View larger: Waterfront, photo 3 of 4">
+              <img src="images/waterfront-3-s.jpg" srcset="images/waterfront-3-s.jpg 900w, images/waterfront-3-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman at the edge of the frame, arm raised behind her head, the harbour behind" loading="lazy" decoding="async">
+            </button>
+          </figure>
+          <figure class="frame" style="--ar:0.75;--d:240ms">
+            <button type="button" class="frame-btn" data-full="images/waterfront-4-l.jpg" aria-label="View larger: Waterfront, photo 4 of 4">
+              <img src="images/waterfront-4-s.jpg" srcset="images/waterfront-4-s.jpg 900w, images/waterfront-4-l.jpg 2000w" sizes="(min-width: 900px) 34vw, 60vw" width="1500" height="2000" alt="Woman sitting on a sandstone ledge, the harbour and a bridge behind" loading="lazy" decoding="async">
             </button>
           </figure>
           </div>
