@@ -158,7 +158,9 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   align-items: center;
   gap: clamp(16px, 3vw, 40px);
   min-height: clamp(300px, 56vh, 560px);
+  position: relative;
 }
+.shift-tone { position: absolute; left: 0; right: 0; top: 50%; bottom: 0; pointer-events: none; } /* page turns black once the object passes the middle */
 .shift-stage { width: clamp(150px, 26vh, 250px); aspect-ratio: 1; max-width: 100%; }
 .shift-line { height: 1px; background: var(--fg); transform: scaleX(var(--p, 1)); }
 .shift-line:first-child { transform-origin: right center; }
@@ -347,10 +349,11 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   </header>
 
   <main>
-      <div class="shift" data-tone="dark" aria-hidden="true">
+      <div class="shift" aria-hidden="true">
         <span class="shift-line"></span>
         <div class="shift-stage" data-object="camera"></div>
         <span class="shift-line"></span>
+        <span class="shift-tone" data-tone="dark"></span>
       </div>
 
     <section class="section" id="work" data-tone="dark" aria-labelledby="work-title">
@@ -541,10 +544,11 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
         </div>
       </section>
 
-      <div class="shift" data-tone="dark" aria-hidden="true">
+      <div class="shift" aria-hidden="true">
         <span class="shift-line"></span>
         <div class="shift-stage" data-object="film"></div>
         <span class="shift-line"></span>
+        <span class="shift-tone" data-tone="dark"></span>
       </div>
 
       <section class="chapter" id="carpark" data-tone="dark" data-title="Car park" aria-labelledby="carpark-title">
@@ -722,10 +726,11 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
         </div>
       </section>
 
-      <div class="shift" data-tone="dark" aria-hidden="true">
+      <div class="shift" aria-hidden="true">
         <span class="shift-line"></span>
         <div class="shift-stage" data-object="lens"></div>
         <span class="shift-line"></span>
+        <span class="shift-tone" data-tone="dark"></span>
       </div>
 
     <section class="section" id="about" data-tone="dark" aria-labelledby="about-title">
@@ -767,10 +772,11 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
       </div>
     </section>
 
-      <div class="shift" data-tone="dark" aria-hidden="true">
+      <div class="shift" aria-hidden="true">
         <span class="shift-line"></span>
         <div class="shift-stage" data-object="prints"></div>
         <span class="shift-line"></span>
+        <span class="shift-tone" data-tone="dark"></span>
       </div>
 
     <section class="section" id="contact" data-tone="light" aria-labelledby="contact-title">
@@ -814,13 +820,19 @@ h2, h3 { text-wrap: balance; font-weight: 300; }
   const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   root.dataset.tone = 'light';
 
-  /* ---------- page tone: the section crossing the middle of the screen sets white or black ---------- */
-  if ('IntersectionObserver' in window) {
-    const toneIO = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) root.dataset.tone = e.target.dataset.tone; });
-    }, { rootMargin: '-50% 0px -50% 0px' });
-    document.querySelectorAll('[data-tone]').forEach(el => toneIO.observe(el));
+  /* ---------- page tone: the last section whose top has passed the middle of the screen sets white or black ---------- */
+  const toned = Array.from(document.querySelectorAll('[data-tone]'));
+  function setTone() {
+    const mid = window.innerHeight * 0.5;
+    let t = 'light';
+    for (const el of toned) { if (el.getBoundingClientRect().top <= mid) t = el.dataset.tone; else break; }
+    if (root.dataset.tone !== t) root.dataset.tone = t;
   }
+  let toneQueued = false;
+  const queueTone = () => { if (toneQueued) return; toneQueued = true; requestAnimationFrame(() => { toneQueued = false; setTone(); }); };
+  window.addEventListener('scroll', queueTone, { passive: true });
+  window.addEventListener('resize', queueTone);
+  setTone();
 
   /* ---------- scroll reveals ---------- */
   if (!calm && 'IntersectionObserver' in window) {
